@@ -121,7 +121,7 @@ export function SharpScatter({
           x2={plot.x1}
           y1={geom.sy(baseline)}
           y2={geom.sy(baseline)}
-          stroke="#898781"
+          stroke="#6b6963"
           strokeWidth={1}
           strokeDasharray="4 4"
         />
@@ -143,7 +143,7 @@ export function SharpScatter({
               x2={plot.x1}
               y1={geom.sy(r)}
               y2={geom.sy(r)}
-              stroke="#2a333d"
+              stroke="#e3e0d7"
               strokeWidth={1}
             />
             <text
@@ -199,19 +199,19 @@ export function SharpScatter({
           return (
             <g key={w.Uid}>
               {target && (
-                <circle cx={cx} cy={cy} r={11} fill="none" stroke="#9b7755" strokeWidth={2} />
+                <circle cx={cx} cy={cy} r={11} fill="none" stroke="#8a6845" strokeWidth={2} />
               )}
               <circle
                 cx={cx}
                 cy={cy}
                 r={flagged ? 5 : 3.2}
-                fill={flagged ? '#d95926' : '#3987e5'}
+                fill={flagged ? '#c24a1a' : '#2f74cc'}
                 fillOpacity={flagged ? 0.95 : 0.55}
-                stroke={active ? '#ffffff' : 'none'}
+                stroke={active ? '#1a2129' : 'none'}
                 strokeWidth={active ? 1.5 : 0}
               />
               {flagged && (
-                <circle cx={cx} cy={cy} r={8} fill="none" stroke="#d95926" strokeWidth={1} strokeOpacity={0.5} />
+                <circle cx={cx} cy={cy} r={8} fill="none" stroke="#c24a1a" strokeWidth={1} strokeOpacity={0.5} />
               )}
             </g>
           )
@@ -224,7 +224,7 @@ export function SharpScatter({
             x2={geom.points[nearest].cx}
             y1={plot.y0}
             y2={plot.y1}
-            stroke="#38434f"
+            stroke="#bdb9ad"
             strokeWidth={1}
           />
         )}
