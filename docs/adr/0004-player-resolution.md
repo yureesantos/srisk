@@ -78,7 +78,7 @@ cross-checking market normalisation, and is never used as a person.
   as such.
 - Name forms are inconsistent across the feed ("Mbappe" vs "Kylian Mbappé",
   "Haaland" vs "Erling Haaland"). No entity resolution is attempted here — that
-  is Task 2's problem, not Task 1's — so a player may appear under two spellings.
+  is the reconciliation service's problem, not Betflow's — so a player may appear under two spellings.
   Stated as a limitation.
 - The resolver depends on the raw `Market` template, so it must run before
   placeholder stripping.
@@ -132,7 +132,7 @@ separates them.
 - No Spanish dictionary is hardcoded, so the method survives new markets and new
   competitions.
 - The entity-resolution limitation is unchanged: `Mbappe` and `Kylian Mbappé`
-  remain distinct rows. That is Task 2's problem, not Task 1's.
+  remain distinct rows. That is the reconciliation service's problem, not Betflow's.
 - **Recorded deliberately rather than silently corrected.** A decision that
   survives re-testing is worth more than one that was never re-tested, and the
   original pessimistic claim would have been demonstrably false if published.
