@@ -1,6 +1,6 @@
 # Betflow Analysis — dashboard
 
-An interactive read-out of the Task 1 betting-flow analysis. It presents the
+An interactive read-out of the Betflow betting-flow analysis. It presents the
 findings a trading desk would ask for — where the flow goes, when it arrives,
 how it was priced, how concentrated it is, what the anomaly detectors flagged,
 and which customers are statistically sharp — and lets every headline number be
@@ -23,7 +23,7 @@ it).
 To regenerate the payload after changing the analysis:
 
 ```bash
-cd ..                       # task-1-betflow
+cd ..                       # betflow
 python -m src.pipeline      # writes dashboard/src/data/payload.json
 ```
 

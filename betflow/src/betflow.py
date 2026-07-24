@@ -522,7 +522,7 @@ def _player_breakdown(legs: pd.DataFrame, resolved: pd.DataFrame) -> Table:
     )
     table.notes.append(
         "Names are not entity-resolved: 'Mbappe' and 'Kylian Mbappe' would "
-        "occupy separate rows. Cross-feed identity is Task 2's problem."
+        "occupy separate rows. Cross-feed identity is the reconciliation service's problem."
     )
     return table
 

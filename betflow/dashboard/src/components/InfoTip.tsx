@@ -2,10 +2,10 @@
  *
  * The report used to carry assumptions, limitations and method notes as
  * always-on paragraphs. An operator scanning for anomalies does not read those;
- * but the take-home audience (a CTO/CEO) values the rigour, so the notes must
- * stay one hover or tap away — never gone, never a wall of text. InfoTip is that
- * one hover: a small info icon that opens the notes on demand, keyboard
- * focusable, so nothing is lost, only folded.
+ * but the desk still values the rigour, so the notes must stay one hover or tap
+ * away — never gone, never a wall of text. InfoTip is that one hover: a small
+ * info icon that opens the notes on demand, keyboard focusable, so nothing is
+ * lost, only folded.
  *
  * A single note renders inline; a list renders as numbered lines, mirroring the
  * old Notes block but on demand. */

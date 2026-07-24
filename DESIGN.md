@@ -180,7 +180,7 @@ cockpit is data-led, not prose-led). Display `letter-spacing` ≥ -0.02em.
 
 ## Register: operational cockpit
 
-Task 1 is an **operational monitoring cockpit**, not a readable report: a screen
+Betflow is an **operational monitoring cockpit**, not a readable report: a screen
 a risk/trading desk keeps open and scans in seconds. Consequences for design:
 
 - **Maximum density, minimal prose.** No standfirsts, no lead paragraphs.

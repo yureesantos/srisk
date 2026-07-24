@@ -87,11 +87,11 @@ price than the market's later reading — the signal for sharp behaviour.
 
 ---
 
-# Task 2 terms
+# Reconciliation terms
 
 ## Feed
 
-One provider's view of a match. This exercise has two: `alpha` (stats-style,
+One provider's view of a match. Reconciliation fuses two: `alpha` (stats-style,
 numeric ids, decimal prices) and `beta` (bookmaker-style, string ids, fractional
 odds).
 

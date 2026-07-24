@@ -1,6 +1,6 @@
 # Builds the Task 1 Betflow dashboard and publishes it to GitHub Pages.
 #
-# The dashboard is a static Vite build (task-1-betflow/dashboard). Its Vite
+# The dashboard is a static Vite build (betflow/dashboard). Its Vite
 # `base` is relative ("./"), so the same build works whether Pages serves it
 # from a project subpath (https://<user>.github.io/<repo>/) or a custom domain —
 # no per-environment rebuild.
@@ -15,7 +15,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'task-1-betflow/dashboard/**'
+      - 'betflow/dashboard/**'
       - '.github/workflows/deploy-dashboard.yml'
   # Allow a manual run from the Actions tab.
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: task-1-betflow/dashboard
+        working-directory: betflow/dashboard
     steps:
       - uses: actions/checkout@v4
 
@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: task-1-betflow/dashboard/package-lock.json
+          cache-dependency-path: betflow/dashboard/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -55,7 +55,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: task-1-betflow/dashboard/dist
+          path: betflow/dashboard/dist
 
   deploy:
     needs: build

@@ -106,7 +106,7 @@ function Footer() {
         <span className="font-display font-semibold text-ink2">
           Bet<span className="text-bronze">flow</span>
         </span>
-        <span>— a Sporting Risk product · Task 1</span>
+        <span>— a Sporting Risk product</span>
       </p>
     </footer>
   )

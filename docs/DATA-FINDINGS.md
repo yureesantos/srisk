@@ -1,4 +1,4 @@
-# Data-quality findings — Task 1 (Betflow)
+# Data-quality findings — Betflow
 
 Verified empirically on 2026-07-23 against the two exports in `data/raw/`.
 Every claim here is reproducible from the pipeline; none is an assumption.
