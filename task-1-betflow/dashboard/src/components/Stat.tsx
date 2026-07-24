@@ -108,7 +108,7 @@ export function KpiCard({
     <div
       className="
         flex min-w-0 flex-col gap-2 rounded-lg border border-border bg-surface
-        p-3 shadow-[var(--shadow-raise)] transition-colors hover:border-white/15
+        p-3 shadow-[var(--shadow-raise)] transition-colors hover:border-ink/20
       "
     >
       <div className="flex items-center gap-2">
