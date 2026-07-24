@@ -1,0 +1,36 @@
+{
+  "provider": "alpha",
+  "feed_version": "2.3",
+  "note": "Stats-style feed. Numeric ids, full player names (with diacritics), market codes as strings with ids embedded, decimal prices.",
+  "fixture": {
+    "fixture_id": 778211,
+    "competition": "English Premier League",
+    "kickoff_utc": "2025-05-04T15:30:00Z",
+    "status": "complete",
+    "home_team": { "team_id": 501, "name": "Manchester City" },
+    "away_team": { "team_id": 502, "name": "Arsenal" },
+    "final_score": { "home": 2, "away": 1 }
+  },
+  "players": [
+    { "player_id": 9001, "team_id": 501, "name": "Erling Haaland",   "position": "FW", "stats": { "goals": 1, "shots": 5, "shots_on_target": 3 } },
+    { "player_id": 9002, "team_id": 501, "name": "Kevin De Bruyne",  "position": "MF", "stats": { "goals": 0, "shots": 2, "shots_on_target": 1 } },
+    { "player_id": 9003, "team_id": 501, "name": "Rodri",            "position": "MF", "stats": { "goals": 1, "shots": 2, "shots_on_target": 2 } },
+    { "player_id": 9004, "team_id": 501, "name": "Bernardo Silva",   "position": "MF", "stats": { "goals": 0, "shots": 1, "shots_on_target": 0 } },
+    { "player_id": 9006, "team_id": 501, "name": "Julián Álvarez",   "position": "FW", "stats": { "goals": 0, "shots": 3, "shots_on_target": 1 } },
+    { "player_id": 9007, "team_id": 501, "name": "Mateo Kovačić",    "position": "MF", "stats": { "goals": 0, "shots": 0, "shots_on_target": 0 } },
+    { "player_id": 8001, "team_id": 502, "name": "Bukayo Saka",       "position": "FW", "stats": { "goals": 1, "shots": 4, "shots_on_target": 2 } },
+    { "player_id": 8002, "team_id": 502, "name": "Gabriel Jesus",     "position": "FW", "stats": { "goals": 0, "shots": 2, "shots_on_target": 1 } },
+    { "player_id": 8003, "team_id": 502, "name": "Gabriel Magalhães", "position": "DF", "stats": { "goals": 0, "shots": 1, "shots_on_target": 0 } },
+    { "player_id": 8004, "team_id": 502, "name": "Martin Ødegaard",   "position": "MF", "stats": { "goals": 0, "shots": 3, "shots_on_target": 1 } },
+    { "player_id": 8006, "team_id": 502, "name": "Kai Havertz",       "position": "FW", "stats": { "goals": 0, "shots": 2, "shots_on_target": 1 } }
+  ],
+  "markets": [
+    { "code": "OU_TOTAL_GOALS@2.5",        "selection": "OVER",  "price": 1.80 },
+    { "code": "OU_TOTAL_GOALS@2.5",        "selection": "UNDER", "price": 2.00 },
+    { "code": "BTTS",                      "selection": "YES",   "price": 1.72 },
+    { "code": "BTTS",                      "selection": "NO",    "price": 2.05 },
+    { "code": "PLAYER_SHOTS_ON@9001@1.5",  "selection": "OVER",  "price": 1.90 },
+    { "code": "PLAYER_SHOTS_ON@9001@1.5",  "selection": "UNDER", "price": 1.90 },
+    { "code": "PLAYER_GOALS@8001@0.5",     "selection": "OVER",  "price": 2.40 }
+  ]
+}

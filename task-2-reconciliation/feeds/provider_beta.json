@@ -1,0 +1,36 @@
+{
+  "provider": "beta",
+  "feed_version": "1.0",
+  "note": "Bookmaker-style feed. Own string ids, abbreviated names (no diacritics), nested market objects, FRACTIONAL odds, different stat keys.",
+  "event": {
+    "event_ref": "evt_2k5m9",
+    "league": "Premier League",
+    "start": "2025-05-04T16:30:00+01:00",
+    "settled": true,
+    "teams": { "home": { "id": "MCI", "short": "Man City" }, "away": { "id": "ARS", "short": "Arsenal FC" } },
+    "result": { "home_goals": 2, "away_goals": 2 }
+  },
+  "lineup": [
+    { "id": "p_h44",  "team": "MCI", "label": "E. Haaland",         "perf": { "g": 1, "sh": 4, "sot": 3 } },
+    { "id": "p_db17", "team": "MCI", "label": "K. De Bruyne",       "perf": { "g": 0, "sh": 2, "sot": 1 } },
+    { "id": "p_r16",  "team": "MCI", "label": "Rodrigo Hernandez",  "perf": { "g": 1, "sh": 2, "sot": 2 } },
+    { "id": "p_bs20", "team": "MCI", "label": "B. Silva",           "perf": { "g": 0, "sh": 1, "sot": 0 } },
+    { "id": "p_ja19", "team": "MCI", "label": "J. Alvarez",         "perf": { "g": 0, "sh": 3, "sot": 1 } },
+    { "id": "p_pf47", "team": "MCI", "label": "P. Foden",           "perf": { "g": 0, "sh": 1, "sot": 0 } },
+    { "id": "p_bs7",  "team": "ARS", "label": "B. Saka",            "perf": { "g": 1, "sh": 4, "sot": 2 } },
+    { "id": "p_gj9",  "team": "ARS", "label": "G. Jesus",           "perf": { "g": 0, "sh": 2, "sot": 1 } },
+    { "id": "p_gm6",  "team": "ARS", "label": "G. Magalhaes",       "perf": { "g": 0, "sh": 1, "sot": 0 } },
+    { "id": "p_mo8",  "team": "ARS", "label": "M. Odegaard",        "perf": { "g": 0, "sh": 3, "sot": 1 } },
+    { "id": "p_kh29", "team": "ARS", "label": "K. Havertz",         "perf": { "g": 0, "sh": 2, "sot": 1 } },
+    { "id": "p_dr41", "team": "ARS", "label": "D. Rice",            "perf": { "g": 0, "sh": 1, "sot": 0 } },
+    { "id": "p_x99",  "team": null,  "label": "Unidentified Player","perf": { "g": 0, "sh": 0, "sot": 0 } }
+  ],
+  "prices": [
+    { "market": "total_goals",            "line": 2.5, "runner": "over",  "odds": "4/5" },
+    { "market": "total_goals",            "line": 2.5, "runner": "under", "odds": "1/1" },
+    { "market": "player_shots_on_target", "player": "p_h44", "line": 1.5, "runner": "over",  "odds": "9/10" },
+    { "market": "player_shots_on_target", "player": "p_h44", "line": 1.5, "runner": "under", "odds": "9/10" },
+    { "market": "player_to_score",        "player": "p_bs7", "line": 0.5, "runner": "over",  "odds": "6/4" },
+    { "market": "asian_handicap",         "line": -1.5, "runner": "home", "odds": "21/20" }
+  ]
+}
