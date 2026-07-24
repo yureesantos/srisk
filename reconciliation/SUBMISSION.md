@@ -1,6 +1,6 @@
 # Submission notes
 
-**Name:** _(fill in)_
+**Name:** Yure
 **Date:** 2026-07-24
 **Approx. time spent:** ~3.5 hours
 **Language / key libraries:** Python 3.10, standard library only (json, dataclasses, datetime, unicodedata, fractions). Dev dependency: pytest.
