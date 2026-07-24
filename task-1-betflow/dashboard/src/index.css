@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* shadcn/Radix primitives read these role variables. Rather than ship shadcn's
+   zinc/oklch defaults — which would make the primitives look like a generic
+   template — every role is mapped onto Sporting Risk's own brand tokens, so a
+   Tabs strip or a Tooltip is visually indistinguishable from the house
+   components beside it. Bronze is reserved for focus (--ring): on this brand,
+   selection *is* the identity accent. No data-carrying role maps to bronze. */
+:root {
+  --background: #141a20;
+  --foreground: #ffffff;
+  --card: #222b35;
+  --card-foreground: #ffffff;
+  --popover: #222b35;
+  --popover-foreground: #ffffff;
+  --primary: #3987e5;
+  --primary-foreground: #ffffff;
+  --secondary: #222b35;
+  --secondary-foreground: #ffffff;
+  --muted: #222b35;
+  --muted-foreground: #898781;
+  --accent: #222b35;
+  --accent-foreground: #ffffff;
+  --destructive: #d03b3b;
+  --destructive-foreground: #ffffff;
+  --border: rgb(255 255 255 / 0.10);
+  --input: rgb(255 255 255 / 0.10);
+  --ring: #9b7755;
+  --radius: 0.5rem;
+}
+
+/* Map the shadcn roles into Tailwind's utility namespace (v4 convention), so
+   `bg-popover`, `border-border`, `ring-ring`, `text-muted-foreground` resolve. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted-fg: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* Design tokens mirror DESIGN.md exactly.
+   Surfaces and accent are Sporting Risk's own brand, extracted from their
+   stylesheet. The series palette is validated against that surface for
+   colour-vision separation — see DESIGN.md for the validator output. */
+@theme {
+  --color-page: #141a20;
+  --color-surface: #1a2129;
+  --color-raised: #222b35;
+
+  --color-ink: #ffffff;
+  --color-ink2: #c3c2b7;
+  --color-muted: #898781;
+
+  --color-grid: #2a333d;
+  --color-axis: #38434f;
+
+  /* Identity only. Chroma 0.066 reads as grey on thin marks, so this colour
+     never touches a data series — exactly how the client uses it. */
+  --color-bronze: #9b7755;
+
+  --color-s1: #3987e5;
+  --color-s2: #d95926;
+  --color-s3: #199e70;
+  --color-s4: #c98500;
+
+  /* Status ramp (DESIGN.md). Severity is always icon + word + colour, never
+     colour alone. Good/serious were missing before the cockpit needed them. */
+  --color-good: #0ca30c;
+  --color-warning: #fab219;
+  --color-serious: #ec835a;
+  --color-critical: #d03b3b;
+
+  /* Three type roles (see DESIGN.md). Body carries prose, display carries
+     headings with character, mono carries every figure so money columns align
+     on the digit. Roles never bleed: display only on headings, mono only on
+     data. */
+  --font-sans: "Albert Sans", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk Variable", "Albert Sans", ui-sans-serif, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* One panel radius, so every table, card and chart vessel shares a shape. */
+  --radius-panel: 0.75rem;
+
+  /* Elevation. Raised surfaces get a hairline top highlight plus a soft drop —
+     depth without shadow-junk, tuned for the dark surface. */
+  --shadow-raise: 0 1px 0 0 rgb(255 255 255 / 0.04) inset,
+    0 10px 28px -14px rgb(0 0 0 / 0.55);
+  --shadow-overlay: 0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+    0 16px 40px -12px rgb(0 0 0 / 0.6);
+
+  /* Semantic z-index scale, ordered by intent — never arbitrary 999s.
+     Named under Tailwind v4's `--z-index-*` namespace so `z-sticky`,
+     `z-dropdown`, `z-tooltip` generate real utilities. */
+  --z-index-sticky: 20;
+  --z-index-dropdown: 30;
+  --z-index-tooltip: 40;
+}
+
+@layer base {
+  html {
+    overflow-x: clip;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-page);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-bronze);
+    color: #fff;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-bronze) var(--color-surface);
+  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-track { background: var(--color-surface); }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-bronze);
+    border-radius: 6px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-bronze);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+}
+
+@layer utilities {
+  /* Numbers that sit in aligned columns. Figures inside prose stay
+     proportional — tabular figures are for comparison, not for reading. */
+  .tnum {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Verification highlight, applied when a finding points at its evidence. */
+.is-verify-target {
+  outline: 1px solid var(--color-bronze);
+  outline-offset: -1px;
+  background: color-mix(in oklab, var(--color-bronze) 14%, transparent) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
