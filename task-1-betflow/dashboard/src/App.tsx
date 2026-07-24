@@ -15,6 +15,7 @@ import { TooltipProvider } from './components/ui/tooltip'
 import { Topbar } from './components/Topbar'
 import { AlertStrip, AlertsPanel } from './components/Alerts'
 import { Shell, type NavItem } from './components/Shell'
+import { KeyFindings } from './sections/KeyFindings'
 import { Overview } from './sections/Overview'
 import { Flow } from './sections/Flow'
 import { Timing } from './sections/Timing'
@@ -24,6 +25,7 @@ import { Anomalies } from './sections/Anomalies'
 import { Sharp } from './sections/Sharp'
 import { DataQuality } from './sections/DataQuality'
 import {
+  Lightbulb,
   BookOpen,
   Waypoints,
   Clock,
@@ -37,6 +39,7 @@ import { payload } from './lib/payload'
 import { dateTime } from './lib/format'
 
 const NAV: NavItem[] = [
+  { id: 'key_findings', label: 'Key findings', icon: Lightbulb },
   { id: 'overview', label: 'The book at a glance', icon: BookOpen },
   { id: 'flow', label: 'Flow by dimension', icon: Waypoints },
   { id: 'timing', label: 'Timing', icon: Clock },
@@ -58,6 +61,7 @@ export default function App() {
               <AlertStrip />
               <AlertsPanel />
             </div>
+            <KeyFindings />
             <Overview />
             <Flow />
             <Timing />
