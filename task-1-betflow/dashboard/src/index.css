@@ -6,27 +6,34 @@
    template — every role is mapped onto Sporting Risk's own brand tokens, so a
    Tabs strip or a Tooltip is visually indistinguishable from the house
    components beside it. Bronze is reserved for focus (--ring): on this brand,
-   selection *is* the identity accent. No data-carrying role maps to bronze. */
+   selection *is* the identity accent. No data-carrying role maps to bronze.
+
+   Light theme: warm stone off-white surfaces (the family of the brand's own
+   warm greys), with the brand's dark surface #1a2129 reused as primary ink.
+   The series and status colours are stepped darker from their dark-theme values
+   so they clear WCAG contrast on a light ground — see DESIGN.md. */
 :root {
-  --background: #141a20;
-  --foreground: #ffffff;
-  --card: #222b35;
-  --card-foreground: #ffffff;
-  --popover: #222b35;
-  --popover-foreground: #ffffff;
-  --primary: #3987e5;
+  color-scheme: light;
+
+  --background: #f2f0ea;
+  --foreground: #1a2129;
+  --card: #ffffff;
+  --card-foreground: #1a2129;
+  --popover: #ffffff;
+  --popover-foreground: #1a2129;
+  --primary: #2f74cc;
   --primary-foreground: #ffffff;
-  --secondary: #222b35;
-  --secondary-foreground: #ffffff;
-  --muted: #222b35;
-  --muted-foreground: #898781;
-  --accent: #222b35;
-  --accent-foreground: #ffffff;
-  --destructive: #d03b3b;
+  --secondary: #ffffff;
+  --secondary-foreground: #1a2129;
+  --muted: #ece9e2;
+  --muted-foreground: #6b6963;
+  --accent: #ece9e2;
+  --accent-foreground: #1a2129;
+  --destructive: #c03636;
   --destructive-foreground: #ffffff;
-  --border: rgb(255 255 255 / 0.10);
-  --input: rgb(255 255 255 / 0.10);
-  --ring: #9b7755;
+  --border: rgb(26 33 41 / 0.12);
+  --input: rgb(26 33 41 / 0.12);
+  --ring: #8a6845;
   --radius: 0.5rem;
 }
 
@@ -57,36 +64,40 @@
 }
 
 /* Design tokens mirror DESIGN.md exactly.
-   Surfaces and accent are Sporting Risk's own brand, extracted from their
-   stylesheet. The series palette is validated against that surface for
-   colour-vision separation — see DESIGN.md for the validator output. */
+   Surfaces are warm stone off-whites — the family of Sporting Risk's own warm
+   greys, the natural ground for bronze; ink is the brand's dark surface #1a2129
+   reused. The series and status palettes are stepped darker from their
+   dark-theme values (holding hue, dropping lightness) so they clear WCAG
+   contrast on this light ground — see DESIGN.md for the validator output. */
 @theme {
-  --color-page: #141a20;
-  --color-surface: #1a2129;
-  --color-raised: #222b35;
+  --color-page: #f2f0ea;
+  --color-surface: #f9f8f4;
+  --color-raised: #ffffff;
 
-  --color-ink: #ffffff;
-  --color-ink2: #c3c2b7;
-  --color-muted: #898781;
+  --color-ink: #1a2129;
+  --color-ink2: #47505b;
+  --color-muted: #6b6963;
 
-  --color-grid: #2a333d;
-  --color-axis: #38434f;
+  --color-grid: #e3e0d7;
+  --color-axis: #bdb9ad;
 
-  /* Identity only. Chroma 0.066 reads as grey on thin marks, so this colour
-     never touches a data series — exactly how the client uses it. */
-  --color-bronze: #9b7755;
+  /* Identity only — stepped one notch darker (#9b7755 → #8a6845) so it clears
+     4.5:1 as small text on the light surface, while staying unmistakably the
+     same bronze. Never touches a data series — exactly how the client uses it. */
+  --color-bronze: #8a6845;
 
-  --color-s1: #3987e5;
-  --color-s2: #d95926;
-  --color-s3: #199e70;
-  --color-s4: #c98500;
+  --color-s1: #2f74cc;
+  --color-s2: #c24a1a;
+  --color-s3: #178a62;
+  --color-s4: #a06e00;
 
   /* Status ramp (DESIGN.md). Severity is always icon + word + colour, never
-     colour alone. Good/serious were missing before the cockpit needed them. */
-  --color-good: #0ca30c;
-  --color-warning: #fab219;
-  --color-serious: #ec835a;
-  --color-critical: #d03b3b;
+     colour alone. Darkened for the light ground — the warning yellow and the
+     serious orange failed contrast on white at their dark-theme values. */
+  --color-good: #157f15;
+  --color-warning: #8a6700;
+  --color-serious: #b04f24;
+  --color-critical: #c03636;
 
   /* Three type roles (see DESIGN.md). Body carries prose, display carries
      headings with character, mono carries every figure so money columns align
@@ -99,12 +110,13 @@
   /* One panel radius, so every table, card and chart vessel shares a shape. */
   --radius-panel: 0.75rem;
 
-  /* Elevation. Raised surfaces get a hairline top highlight plus a soft drop —
-     depth without shadow-junk, tuned for the dark surface. */
-  --shadow-raise: 0 1px 0 0 rgb(255 255 255 / 0.04) inset,
-    0 10px 28px -14px rgb(0 0 0 / 0.55);
-  --shadow-overlay: 0 1px 0 0 rgb(255 255 255 / 0.06) inset,
-    0 16px 40px -12px rgb(0 0 0 / 0.6);
+  /* Elevation, tuned for a light ground: a crisp 1px contact shadow plus a soft
+     ink-tinted drop. Dark drop-shadows at high alpha read as smudges on paper,
+     and a white inset highlight does nothing on a white card — both replaced. */
+  --shadow-raise: 0 1px 2px 0 rgb(26 33 41 / 0.05),
+    0 10px 28px -14px rgb(26 33 41 / 0.10);
+  --shadow-overlay: 0 1px 2px 0 rgb(26 33 41 / 0.07),
+    0 16px 40px -12px rgb(26 33 41 / 0.18);
 
   /* Semantic z-index scale, ordered by intent — never arbitrary 999s.
      Named under Tailwind v4's `--z-index-*` namespace so `z-sticky`,
@@ -170,7 +182,7 @@
 .is-verify-target {
   outline: 1px solid var(--color-bronze);
   outline-offset: -1px;
-  background: color-mix(in oklab, var(--color-bronze) 14%, transparent) !important;
+  background: color-mix(in oklab, var(--color-bronze) 18%, transparent) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

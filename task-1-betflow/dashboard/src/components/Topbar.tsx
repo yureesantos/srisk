@@ -88,7 +88,13 @@ export function Topbar() {
                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
               "
             >
-              <img src={mark} alt="" width={22} height={24} className="shrink-0" />
+              {/* The badge is a light disc with a dark S + bronze R, designed
+                  for Sporting Risk's own dark site. On the light topbar it sits
+                  in a small dark chip so its disc reads — the parent brand's
+                  dark ground preserved, matching the Betflow mark's chip. */}
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-ink">
+                <img src={mark} alt="" width={18} height={20} />
+              </span>
               <span className="hidden text-[11px] font-medium text-ink2 sm:inline">
                 Sporting&nbsp;Risk
               </span>

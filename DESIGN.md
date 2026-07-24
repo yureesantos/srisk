@@ -61,6 +61,46 @@ This is not dark because "tools look cool dark" — it is dark because the surfa
 must recede for the data to advance, and because high density on a light ground
 fatigues on long reads. It also happens to be what the client's own brand does.
 
+## Light theme
+
+The product ships a **single light theme** (the dark system above is the design
+origin, kept documented). The port holds the identity: bronze stays the only
+accent, blue stays primary, and the brand's dark surface `#1a2129` is **reused
+as the primary ink** — the dark world becomes the ink. Surfaces are warm stone
+off-whites (the family of the brand's own warm greys), never a Bootstrap-white
+glare. The BetflowMark and the Sporting Risk badge keep dark chips — the brand's
+dark ground preserved as the marks themselves.
+
+The series and status palettes were **re-grounded** for the light surface:
+holding each hue angle and dropping lightness, because the dark-validated hexes
+fail WCAG on white (amber `#c98500` was 2.89:1, warning `#fab219` 1.73:1 — the
+classic light-theme failures). Every value below is contrast-checked against the
+light surface `#f9f8f4`.
+
+| Role | Dark | Light | vs surface |
+|---|---|---|---|
+| Page plane | `#141a20` | `#f2f0ea` | — |
+| Chart surface | `#1a2129` | `#f9f8f4` | — |
+| Raised (cards) | `#222b35` | `#ffffff` | — |
+| Primary ink | `#ffffff` | `#1a2129` | 15.3 |
+| Secondary ink | `#c3c2b7` | `#47505b` | 7.7 |
+| Muted (axes/labels) | `#898781` | `#6b6963` | 5.2 |
+| Gridline | `#2a333d` | `#e3e0d7` | — |
+| Baseline / axis | `#38434f` | `#bdb9ad` | — |
+| Bronze (identity) | `#9b7755` | `#8a6845` | 4.8 |
+| s1 blue | `#3987e5` | `#2f74cc` | 4.4 |
+| s2 orange | `#d95926` | `#c24a1a` | 4.6 |
+| s3 green | `#199e70` | `#178a62` | 4.1 |
+| s4 amber | `#c98500` | `#a06e00` | 4.2 |
+| good | `#0ca30c` | `#157f15` | 4.9 |
+| warning | `#fab219` | `#8a6700` | 4.9 |
+| serious | `#ec835a` | `#b04f24` | 5.0 |
+| critical | `#d03b3b` | `#c03636` | 5.2 |
+
+Shadows are retuned to soft ink-tinted drops (dark shadows smudge on paper). The
+colour lives in three places kept in lock-step: `index.css` tokens,
+`theme/echarts.ts` (canvas can't read CSS vars), and the `SharpScatter.tsx` SVG.
+
 ## Color
 
 ### Surfaces and ink
