@@ -19,10 +19,29 @@ export function DataQuality() {
   const dedup = dq.dedup
   const player = dq.player_resolution
 
+  // `rows_raw` and `exact_dups_removed` ship per source file ({file: count});
+  // the funnel wants the total across both exports.
+  const sumByFile = (block: unknown): number =>
+    Object.values((block ?? {}) as Record<string, number>).reduce(
+      (a, b) => a + b,
+      0,
+    )
+  const rawTotal = sumByFile(dedup.rows_raw)
+  const exactDupsTotal = sumByFile(dedup.exact_dups_removed)
+
   const dedupSteps: FunnelStep[] = [
-    { label: 'Raw rows across both exports', count: dedup.rows_raw as number },
-    { label: 'After exact-duplicate removal', count: (dedup.rows_raw as number) - (dedup.exact_dups_removed as number), note: 'exact duplicate rows' },
-    { label: 'After cross-file de-overlap', count: dedup.legs as number, note: 'rows present in both exports', terminal: true },
+    { label: 'Raw rows across both exports', count: rawTotal },
+    {
+      label: 'After exact-duplicate removal',
+      count: rawTotal - exactDupsTotal,
+      note: 'exact duplicate rows',
+    },
+    {
+      label: 'After cross-file de-overlap',
+      count: dedup.legs as number,
+      note: 'rows present in both exports',
+      terminal: true,
+    },
   ]
 
   return (
