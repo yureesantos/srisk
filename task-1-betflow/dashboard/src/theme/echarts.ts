@@ -38,17 +38,18 @@ echarts.use([
   CanvasRenderer,
 ])
 
-// DESIGN.md palette. The series order is deliberate: primary carries the main
-// quantity, the others separate categories that sit beside it. Four is the cap
-// for bars; scatter never uses more than three (DESIGN.md, colour-vision floor).
-const SURFACE = '#1a2129'
-const INK = '#ffffff'
-const INK2 = '#c3c2b7'
-const MUTED = '#898781'
-const GRID = '#2a333d'
-const AXIS = '#38434f'
+// DESIGN.md palette (light theme). Literal hex, kept in lock-step with the
+// index.css tokens because the canvas can't read CSS custom properties. The
+// series are the light-ground values (stepped darker from the dark theme so
+// they clear contrast on a light surface).
+const SURFACE = '#f9f8f4'
+const INK = '#1a2129'
+const INK2 = '#47505b'
+const MUTED = '#6b6963'
+const GRID = '#e3e0d7'
+const AXIS = '#bdb9ad'
 
-const SERIES = ['#3987e5', '#d95926', '#199e70', '#c98500']
+const SERIES = ['#2f74cc', '#c24a1a', '#178a62', '#a06e00']
 
 // The same three type roles as the DOM (DESIGN.md), as literal strings because
 // the canvas cannot resolve CSS custom properties. Kept in step with index.css.
@@ -116,13 +117,13 @@ echarts.registerTheme(THEME, {
   // away (white box, drop shadow, arrow). Replaced with a raised-surface card
   // that matches the rest of the UI.
   tooltip: {
-    backgroundColor: '#222b35',
+    backgroundColor: '#ffffff',
     borderColor: GRID,
     borderWidth: 1,
     padding: [8, 10],
     textStyle: { color: INK, fontFamily: SANS, fontSize: 12 },
     extraCssText:
-      'border-radius:6px;box-shadow:0 6px 22px rgba(0,0,0,0.45);backdrop-filter:none;',
+      'border-radius:6px;box-shadow:0 6px 22px rgba(26,33,41,0.16);backdrop-filter:none;',
     axisPointer: {
       type: 'line',
       lineStyle: { color: AXIS, width: 1, type: 'dashed' },
