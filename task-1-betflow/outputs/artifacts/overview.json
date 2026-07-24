@@ -1,0 +1,87 @@
+{
+ "artifact": "overview",
+ "schema_version": 1,
+ "generated_at": "2026-07-24T02:19:46+00:00",
+ "dataset_fingerprint": "sha256:37d5b460d1cc867e",
+ "payload_hash": "sha256:f0ec9b80a904e858",
+ "environment": {
+  "python": "3.10.0",
+  "pandas": "2.1.4",
+  "numpy": "1.26.2"
+ },
+ "data": {
+  "universe": {
+   "id": "overview.universe",
+   "title": "Analysed universe",
+   "rows_raw_total": 167103,
+   "legs": 112717,
+   "betslips": 77432,
+   "fixtures": 453,
+   "competitions": 56,
+   "date_min": "2026-03-10",
+   "date_max": "2026-06-23",
+   "notes": [
+    "June carries 99.8% of betslips: this is a ~23-day book with a three-month tail, not a March-to-June series."
+   ]
+  },
+  "turnover": {
+   "id": "overview.turnover",
+   "title": "Turnover by currency",
+   "grain": "betslip",
+   "turnover": {
+    "by_currency": {
+     "EUR": 1116431.73,
+     "PEN": 375804.75,
+     "USD": 596.18
+    },
+    "unresolved_rows": 1366,
+    "unresolved_units": 31455.83
+   },
+   "ggr": {
+    "by_currency": {
+     "EUR": 193095.34,
+     "PEN": 56053.93,
+     "USD": 215.11
+    },
+    "unresolved_rows": 1366,
+    "unresolved_units": 17002.29
+   },
+   "inflation_leg_vs_betslip": {
+    "EUR": 1.0872,
+    "PEN": 1.0218,
+    "USD": 1.0293
+   },
+   "notes": [
+    "No FX rate ships with the data, so no figure crosses a currency (ADR-0001). Spain and Peru are separate tracks.",
+    "1,366 betslips carry no currency: counted everywhere, summed nowhere.",
+    "Leg-grain turnover runs above betslip grain because a combined bet repeats its stake on every leg \u2014 the ratio differs by track (EUR bets combine more than PEN bets)."
+   ]
+  },
+  "monthly_betslips": {
+   "id": "overview.monthly_betslips",
+   "title": "Betslips by month",
+   "grain": "betslip",
+   "rows": [
+    {
+     "month": "2026-03",
+     "betslips": 4
+    },
+    {
+     "month": "2026-04",
+     "betslips": 11
+    },
+    {
+     "month": "2026-05",
+     "betslips": 117
+    },
+    {
+     "month": "2026-06",
+     "betslips": 77300
+    }
+   ],
+   "notes": [
+    "Time-series anomaly detection is not supportable on this shape."
+   ]
+  }
+ }
+}

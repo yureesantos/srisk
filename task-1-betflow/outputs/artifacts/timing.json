@@ -1,0 +1,1019 @@
+{
+ "artifact": "timing",
+ "schema_version": 1,
+ "generated_at": "2026-07-24T02:19:46+00:00",
+ "dataset_fingerprint": "sha256:37d5b460d1cc867e",
+ "payload_hash": "sha256:f0ec9b80a904e858",
+ "environment": {
+  "python": "3.10.0",
+  "pandas": "2.1.4",
+  "numpy": "1.26.2"
+ },
+ "data": {
+  "phases": {
+   "id": "timing.phases",
+   "title": "Legs by time phase",
+   "grain": "leg",
+   "rows": [
+    {
+     "phase": "More than 7d before",
+     "is_pre_match": true,
+     "legs": 0,
+     "share": 0.0,
+     "betslips": 0,
+     "turnover": {
+      "by_currency": {},
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "phase": "7d to 24h before",
+     "is_pre_match": true,
+     "legs": 15661,
+     "share": 0.1389,
+     "betslips": 8263,
+     "turnover": {
+      "by_currency": {
+       "EUR": 68921.17,
+       "PEN": 112071.56,
+       "USD": 48.34
+      },
+      "unresolved_rows": 85,
+      "unresolved_units": 1300.08
+     }
+    },
+    {
+     "phase": "24h to 6h before",
+     "is_pre_match": true,
+     "legs": 29438,
+     "share": 0.2612,
+     "betslips": 21182,
+     "turnover": {
+      "by_currency": {
+       "EUR": 192471.03,
+       "PEN": 46274.84,
+       "USD": 23.3
+      },
+      "unresolved_rows": 394,
+      "unresolved_units": 8056.6
+     }
+    },
+    {
+     "phase": "6h to 60m before",
+     "is_pre_match": true,
+     "legs": 32146,
+     "share": 0.2852,
+     "betslips": 28152,
+     "turnover": {
+      "by_currency": {
+       "EUR": 327610.54,
+       "PEN": 46640.56,
+       "USD": 49.31
+      },
+      "unresolved_rows": 469,
+      "unresolved_units": 10865.99
+     }
+    },
+    {
+     "phase": "60m to 5m before (post-lineups proxy)",
+     "is_pre_match": true,
+     "legs": 24058,
+     "share": 0.2134,
+     "betslips": 23621,
+     "turnover": {
+      "by_currency": {
+       "EUR": 430833.7,
+       "PEN": 76259.95,
+       "USD": 281.0
+      },
+      "unresolved_rows": 350,
+      "unresolved_units": 8432.71
+     }
+    },
+    {
+     "phase": "5m to kick-off",
+     "is_pre_match": true,
+     "legs": 3667,
+     "share": 0.0325,
+     "betslips": 3633,
+     "turnover": {
+      "by_currency": {
+       "EUR": 58898.75,
+       "PEN": 23381.18,
+       "USD": 100.6
+      },
+      "unresolved_rows": 30,
+      "unresolved_units": 619.08
+     }
+    },
+    {
+     "phase": "In-play: 0-45m",
+     "is_pre_match": false,
+     "legs": 3273,
+     "share": 0.029,
+     "betslips": 3268,
+     "turnover": {
+      "by_currency": {
+       "EUR": 47102.91,
+       "PEN": 16194.07,
+       "USD": 50.0
+      },
+      "unresolved_rows": 68,
+      "unresolved_units": 1545.0
+     }
+    },
+    {
+     "phase": "In-play: 45-90m",
+     "is_pre_match": false,
+     "legs": 2770,
+     "share": 0.0246,
+     "betslips": 2767,
+     "turnover": {
+      "by_currency": {
+       "EUR": 50347.05,
+       "PEN": 45707.81,
+       "USD": 6.7
+      },
+      "unresolved_rows": 42,
+      "unresolved_units": 1060.0
+     }
+    },
+    {
+     "phase": "In-play: 90-120m (extra time)",
+     "is_pre_match": false,
+     "legs": 1674,
+     "share": 0.0149,
+     "betslips": 1673,
+     "turnover": {
+      "by_currency": {
+       "EUR": 37306.57,
+       "PEN": 17434.93,
+       "USD": 54.4
+      },
+      "unresolved_rows": 12,
+      "unresolved_units": 370.79
+     }
+    },
+    {
+     "phase": "More than 120m after kick-off (residual)",
+     "is_pre_match": false,
+     "legs": 30,
+     "share": 0.0003,
+     "betslips": 30,
+     "turnover": {
+      "by_currency": {
+       "EUR": 283.77,
+       "PEN": 33.5
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    }
+   ],
+   "notes": [
+    "The 60-minute boundary stands in for 'after team news'. The export carries no lineup timestamp, so this is a proxy, not a measurement.",
+    "In-play bins count wall-clock minutes after the declared kick-off, not match minutes, so half-time falls inside the 45-90m bucket.",
+    "In-play share is an upper bound: a late pre-match bet registered after kick-off is indistinguishable from a true in-play bet.",
+    "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure."
+   ],
+   "truncation": null
+  },
+  "daily": {
+   "id": "timing.daily",
+   "title": "Daily volume",
+   "grain": "betslip",
+   "rows": [
+    {
+     "date": "2026-03-10",
+     "betslips": 1,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.71
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-03-11",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.08
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-03-17",
+     "betslips": 1,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.25
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-03-23",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.63
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-04-07",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.15
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-04-10",
+     "betslips": 1,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.06
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-04-15",
+     "betslips": 4,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.55
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-04-16",
+     "betslips": 4,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.77
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-04-20",
+     "betslips": 1,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.06
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-02",
+     "betslips": 2,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.5
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-04",
+     "betslips": 1,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.69
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-05",
+     "betslips": 4,
+     "legs": 5,
+     "turnover": {
+      "by_currency": {
+       "EUR": 2.05
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-06",
+     "betslips": 5,
+     "legs": 7,
+     "turnover": {
+      "by_currency": {
+       "EUR": 4.5
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-07",
+     "betslips": 4,
+     "legs": 5,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.81
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-08",
+     "betslips": 3,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.67
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-09",
+     "betslips": 2,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.17
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-10",
+     "betslips": 4,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.17
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-11",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.38
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-12",
+     "betslips": 3,
+     "legs": 11,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.62
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-13",
+     "betslips": 8,
+     "legs": 9,
+     "turnover": {
+      "by_currency": {
+       "EUR": 4.04
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-14",
+     "betslips": 2,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.44
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-15",
+     "betslips": 2,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.19
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-16",
+     "betslips": 2,
+     "legs": 3,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.15
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-17",
+     "betslips": 1,
+     "legs": 3,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1.56
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-18",
+     "betslips": 4,
+     "legs": 6,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.97
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-19",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.72
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-20",
+     "betslips": 15,
+     "legs": 24,
+     "turnover": {
+      "by_currency": {
+       "EUR": 5.15
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-21",
+     "betslips": 2,
+     "legs": 3,
+     "turnover": {
+      "by_currency": {
+       "EUR": 12.06
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-22",
+     "betslips": 7,
+     "legs": 11,
+     "turnover": {
+      "by_currency": {
+       "EUR": 8.63
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-23",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1.67
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-24",
+     "betslips": 5,
+     "legs": 6,
+     "turnover": {
+      "by_currency": {
+       "EUR": 2.14
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-25",
+     "betslips": 1,
+     "legs": 1,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.14
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-26",
+     "betslips": 2,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.22
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-27",
+     "betslips": 10,
+     "legs": 13,
+     "turnover": {
+      "by_currency": {
+       "EUR": 117.37,
+       "PEN": 0.1
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-28",
+     "betslips": 4,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 23.98
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-29",
+     "betslips": 7,
+     "legs": 7,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1.38
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-30",
+     "betslips": 5,
+     "legs": 7,
+     "turnover": {
+      "by_currency": {
+       "PEN": 0.13,
+       "EUR": 7.98
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-05-31",
+     "betslips": 9,
+     "legs": 10,
+     "turnover": {
+      "by_currency": {
+       "EUR": 2.92
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-01",
+     "betslips": 1,
+     "legs": 2,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.09
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-02",
+     "betslips": 2,
+     "legs": 4,
+     "turnover": {
+      "by_currency": {
+       "EUR": 0.2,
+       "PEN": 0.1
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-03",
+     "betslips": 11,
+     "legs": 13,
+     "turnover": {
+      "by_currency": {
+       "EUR": 3.04
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-04",
+     "betslips": 39,
+     "legs": 44,
+     "turnover": {
+      "by_currency": {
+       "EUR": 33.17
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-05",
+     "betslips": 5,
+     "legs": 7,
+     "turnover": {
+      "by_currency": {
+       "EUR": 2.27
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-06",
+     "betslips": 16,
+     "legs": 28,
+     "turnover": {
+      "by_currency": {
+       "EUR": 13.63,
+       "PEN": 0.63
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-07",
+     "betslips": 50,
+     "legs": 53,
+     "turnover": {
+      "by_currency": {
+       "EUR": 70.74
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": false
+    },
+    {
+     "date": "2026-06-08",
+     "betslips": 158,
+     "legs": 262,
+     "turnover": {
+      "by_currency": {
+       "EUR": 828.18,
+       "PEN": 2741.7
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-09",
+     "betslips": 624,
+     "legs": 966,
+     "turnover": {
+      "by_currency": {
+       "EUR": 3705.65,
+       "PEN": 6220.81
+      },
+      "unresolved_rows": 3,
+      "unresolved_units": 13.15
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-10",
+     "betslips": 1773,
+     "legs": 2376,
+     "turnover": {
+      "by_currency": {
+       "EUR": 25206.53,
+       "PEN": 8469.66
+      },
+      "unresolved_rows": 85,
+      "unresolved_units": 1853.74
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-11",
+     "betslips": 3077,
+     "legs": 4602,
+     "turnover": {
+      "by_currency": {
+       "EUR": 45054.2,
+       "PEN": 10533.12,
+       "USD": 32.75
+      },
+      "unresolved_rows": 425,
+      "unresolved_units": 10274.46
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-12",
+     "betslips": 3417,
+     "legs": 4910,
+     "turnover": {
+      "by_currency": {
+       "EUR": 40168.49,
+       "PEN": 17291.45,
+       "USD": 12.0
+      },
+      "unresolved_rows": 164,
+      "unresolved_units": 3757.15
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-13",
+     "betslips": 5588,
+     "legs": 8348,
+     "turnover": {
+      "by_currency": {
+       "EUR": 89473.02,
+       "PEN": 42765.39
+      },
+      "unresolved_rows": 117,
+      "unresolved_units": 2478.73
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-14",
+     "betslips": 6449,
+     "legs": 9187,
+     "turnover": {
+      "by_currency": {
+       "EUR": 101289.14,
+       "PEN": 24434.8,
+       "USD": 42.8
+      },
+      "unresolved_rows": 115,
+      "unresolved_units": 2522.11
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-15",
+     "betslips": 7236,
+     "legs": 9910,
+     "turnover": {
+      "by_currency": {
+       "EUR": 127509.7,
+       "PEN": 34371.23,
+       "USD": 40.6
+      },
+      "unresolved_rows": 84,
+      "unresolved_units": 2057.88
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-16",
+     "betslips": 6237,
+     "legs": 10451,
+     "turnover": {
+      "by_currency": {
+       "EUR": 85086.82,
+       "PEN": 35001.04,
+       "USD": 53.48
+      },
+      "unresolved_rows": 74,
+      "unresolved_units": 1620.82
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-17",
+     "betslips": 7916,
+     "legs": 11147,
+     "turnover": {
+      "by_currency": {
+       "EUR": 117398.9,
+       "PEN": 30370.44,
+       "USD": 200.74
+      },
+      "unresolved_rows": 77,
+      "unresolved_units": 1720.01
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-18",
+     "betslips": 4722,
+     "legs": 7113,
+     "turnover": {
+      "by_currency": {
+       "EUR": 68483.69,
+       "PEN": 26394.96,
+       "USD": 30.0
+      },
+      "unresolved_rows": 50,
+      "unresolved_units": 1071.73
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-19",
+     "betslips": 5624,
+     "legs": 8736,
+     "turnover": {
+      "by_currency": {
+       "EUR": 75081.99,
+       "PEN": 30867.94,
+       "USD": 3.34
+      },
+      "unresolved_rows": 40,
+      "unresolved_units": 995.33
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-20",
+     "betslips": 6263,
+     "legs": 9033,
+     "turnover": {
+      "by_currency": {
+       "EUR": 80651.08,
+       "PEN": 48821.14,
+       "USD": 128.97
+      },
+      "unresolved_rows": 38,
+      "unresolved_units": 1075.09
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-21",
+     "betslips": 7105,
+     "legs": 10366,
+     "turnover": {
+      "by_currency": {
+       "EUR": 100697.39,
+       "PEN": 20729.76,
+       "USD": 45.0
+      },
+      "unresolved_rows": 46,
+      "unresolved_units": 930.34
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-22",
+     "betslips": 7311,
+     "legs": 10696,
+     "turnover": {
+      "by_currency": {
+       "EUR": 94690.56,
+       "PEN": 18173.86,
+       "USD": 3.0
+      },
+      "unresolved_rows": 29,
+      "unresolved_units": 510.09
+     },
+     "in_operating_period": true
+    },
+    {
+     "date": "2026-06-23",
+     "betslips": 3676,
+     "legs": 4280,
+     "turnover": {
+      "by_currency": {
+       "EUR": 60777.72,
+       "PEN": 18616.49,
+       "USD": 3.5
+      },
+      "unresolved_rows": 19,
+      "unresolved_units": 575.2
+     },
+     "in_operating_period": true
+    }
+   ],
+   "notes": [
+    "A day is inside the operating period when it carries at least 1% of the busiest day's betslips. The March-to-May tail falls outside it: 132 betslips across 38 days against 77,300 in June."
+   ],
+   "truncation": null
+  }
+ }
+}

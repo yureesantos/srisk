@@ -1,0 +1,1574 @@
+{
+ "artifact": "flow",
+ "schema_version": 1,
+ "generated_at": "2026-07-24T02:19:46+00:00",
+ "dataset_fingerprint": "sha256:37d5b460d1cc867e",
+ "payload_hash": "sha256:f0ec9b80a904e858",
+ "environment": {
+  "python": "3.10.0",
+  "pandas": "2.1.4",
+  "numpy": "1.26.2"
+ },
+ "data": {
+  "by_market": {
+   "id": "flow.by_market",
+   "title": "Legs by market",
+   "grain": "leg",
+   "rows": [
+    {
+     "key": "1-X-2 / 2 goals Up",
+     "label": "1-X-2 / 2 goals Up",
+     "legs": 15019,
+     "share": 0.1332,
+     "betslips": 8709,
+     "turnover": {
+      "by_currency": {
+       "EUR": 273608.98,
+       "PEN": 66029.87,
+       "USD": 44.36
+      },
+      "unresolved_rows": 15,
+      "unresolved_units": 612.78
+     }
+    },
+    {
+     "key": "Home-side combo (bet builder)",
+     "label": "Home-side combo (bet builder)",
+     "legs": 9467,
+     "share": 0.084,
+     "betslips": 6752,
+     "turnover": {
+      "by_currency": {
+       "EUR": 37473.68,
+       "PEN": 3046.04
+      },
+      "unresolved_rows": 37,
+      "unresolved_units": 897.93
+     }
+    },
+    {
+     "key": "Team corners",
+     "label": "Team corners",
+     "legs": 8935,
+     "share": 0.0793,
+     "betslips": 6932,
+     "turnover": {
+      "by_currency": {
+       "EUR": 92642.32,
+       "PEN": 23282.2,
+       "USD": 104.27
+      },
+      "unresolved_rows": 167,
+      "unresolved_units": 3591.36
+     }
+    },
+    {
+     "key": "To score or assist (Star Substitute)",
+     "label": "To score or assist (Star Substitute)",
+     "legs": 7932,
+     "share": 0.0704,
+     "betslips": 5990,
+     "turnover": {
+      "by_currency": {
+       "EUR": 45454.53,
+       "PEN": 12853.82,
+       "USD": 57.0
+      },
+      "unresolved_rows": 144,
+      "unresolved_units": 3064.65
+     }
+    },
+    {
+     "key": "Anytime goalscorer (Star Substitute)",
+     "label": "Anytime goalscorer (Star Substitute)",
+     "legs": 7050,
+     "share": 0.0625,
+     "betslips": 5311,
+     "turnover": {
+      "by_currency": {
+       "EUR": 68733.92,
+       "PEN": 4816.35,
+       "USD": 15.0
+      },
+      "unresolved_rows": 10,
+      "unresolved_units": 180.86
+     }
+    },
+    {
+     "key": "To score 2 or more goals (Star Substitute)",
+     "label": "To score 2 or more goals (Star Substitute)",
+     "legs": 6768,
+     "share": 0.06,
+     "betslips": 4965,
+     "turnover": {
+      "by_currency": {
+       "EUR": 54742.77,
+       "PEN": 3807.03
+      },
+      "unresolved_rows": 28,
+      "unresolved_units": 846.98
+     }
+    },
+    {
+     "key": "Match",
+     "label": "Match",
+     "legs": 6091,
+     "share": 0.054,
+     "betslips": 4183,
+     "turnover": {
+      "by_currency": {
+       "EUR": 18187.22,
+       "PEN": 2353.5
+      },
+      "unresolved_rows": 52,
+      "unresolved_units": 1231.5
+     }
+    },
+    {
+     "key": "Match corners",
+     "label": "Match corners",
+     "legs": 5580,
+     "share": 0.0495,
+     "betslips": 4191,
+     "turnover": {
+      "by_currency": {
+       "EUR": 58697.89,
+       "PEN": 24983.53,
+       "USD": 102.8
+      },
+      "unresolved_rows": 145,
+      "unresolved_units": 3217.37
+     }
+    },
+    {
+     "key": "Shots on target (Star Substitute)",
+     "label": "Shots on target (Star Substitute)",
+     "legs": 4601,
+     "share": 0.0408,
+     "betslips": 3803,
+     "turnover": {
+      "by_currency": {
+       "EUR": 62759.77,
+       "PEN": 4633.02,
+       "USD": 77.49
+      },
+      "unresolved_rows": 85,
+      "unresolved_units": 1913.78
+     }
+    },
+    {
+     "key": "Away-side combo (bet builder)",
+     "label": "Away-side combo (bet builder)",
+     "legs": 2474,
+     "share": 0.0219,
+     "betslips": 2111,
+     "turnover": {
+      "by_currency": {
+       "EUR": 7373.47,
+       "PEN": 410.68
+      },
+      "unresolved_rows": 11,
+      "unresolved_units": 247.08
+     }
+    },
+    {
+     "key": "Team exact bookings (only players and in play)",
+     "label": "Team exact bookings (only players and in play)",
+     "legs": 2307,
+     "share": 0.0205,
+     "betslips": 1864,
+     "turnover": {
+      "by_currency": {
+       "EUR": 28298.9,
+       "PEN": 4771.22
+      },
+      "unresolved_rows": 37,
+      "unresolved_units": 795.65
+     }
+    },
+    {
+     "key": "Team shots on target",
+     "label": "Team shots on target",
+     "legs": 2280,
+     "share": 0.0202,
+     "betslips": 1899,
+     "turnover": {
+      "by_currency": {
+       "EUR": 26268.48,
+       "PEN": 8422.82,
+       "USD": 37.83
+      },
+      "unresolved_rows": 79,
+      "unresolved_units": 1676.86
+     }
+    },
+    {
+     "key": "1st half: Team corners",
+     "label": "1st half: Team corners",
+     "legs": 2119,
+     "share": 0.0188,
+     "betslips": 1645,
+     "turnover": {
+      "by_currency": {
+       "PEN": 6572.11,
+       "EUR": 19053.34,
+       "USD": 5.0
+      },
+      "unresolved_rows": 31,
+      "unresolved_units": 687.49
+     }
+    },
+    {
+     "key": "Saves (Star Substitute)",
+     "label": "Saves (Star Substitute)",
+     "legs": 2058,
+     "share": 0.0183,
+     "betslips": 1735,
+     "turnover": {
+      "by_currency": {
+       "EUR": 39854.36,
+       "PEN": 1400.96,
+       "USD": 12.5
+      },
+      "unresolved_rows": 65,
+      "unresolved_units": 1333.94
+     }
+    },
+    {
+     "key": "Hat trick (three or more goals) (Star Substitute)",
+     "label": "Hat trick (three or more goals) (Star Substitute)",
+     "legs": 1817,
+     "share": 0.0161,
+     "betslips": 1582,
+     "turnover": {
+      "by_currency": {
+       "EUR": 12964.75,
+       "PEN": 4040.98
+      },
+      "unresolved_rows": 2,
+      "unresolved_units": 100.0
+     }
+    },
+    {
+     "key": "__other__",
+     "label": "Other (103 more)",
+     "legs": 28219,
+     "share": 0.2504,
+     "betslips": 22498,
+     "turnover": {
+      "by_currency": {
+       "EUR": 367661.11,
+       "PEN": 212574.27,
+       "USD": 157.4
+      },
+      "unresolved_rows": 542,
+      "unresolved_units": 11852.02
+     }
+    }
+   ],
+   "notes": [
+    "Ranked by legs; totals cover all 118 values.",
+    "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure."
+   ],
+   "truncation": null
+  },
+  "by_competition": {
+   "id": "flow.by_competition",
+   "title": "Legs by competition",
+   "grain": "leg",
+   "rows": [
+    {
+     "key": "2026 FIFA World Cup",
+     "label": "2026 FIFA World Cup",
+     "legs": 105562,
+     "share": 0.9365,
+     "betslips": 72930,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1155276.68,
+       "PEN": 367954.77,
+       "USD": 613.65
+      },
+      "unresolved_rows": 1436,
+      "unresolved_units": 32092.28
+     }
+    },
+    {
+     "key": "Spain LaLiga 2",
+     "label": "Spain LaLiga 2",
+     "legs": 3249,
+     "share": 0.0288,
+     "betslips": 3010,
+     "turnover": {
+      "by_currency": {
+       "EUR": 39613.65,
+       "PEN": 1689.23
+      },
+      "unresolved_rows": 7,
+      "unresolved_units": 84.82
+     }
+    },
+    {
+     "key": "International Friendly Games",
+     "label": "International Friendly Games",
+     "legs": 1305,
+     "share": 0.0116,
+     "betslips": 980,
+     "turnover": {
+      "by_currency": {
+       "EUR": 8239.76,
+       "PEN": 2917.15
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 10.0
+     }
+    },
+    {
+     "key": "Brazil Serie B",
+     "label": "Brazil Serie B",
+     "legs": 1137,
+     "share": 0.0101,
+     "betslips": 874,
+     "turnover": {
+      "by_currency": {
+       "EUR": 6042.94,
+       "PEN": 7987.98
+      },
+      "unresolved_rows": 5,
+      "unresolved_units": 38.15
+     }
+    },
+    {
+     "key": "Chile Primera Division",
+     "label": "Chile Primera Division",
+     "legs": 430,
+     "share": 0.0038,
+     "betslips": 375,
+     "turnover": {
+      "by_currency": {
+       "EUR": 3209.05,
+       "PEN": 2993.88
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Ireland Premier League",
+     "label": "Ireland Premier League",
+     "legs": 243,
+     "share": 0.0022,
+     "betslips": 132,
+     "turnover": {
+      "by_currency": {
+       "EUR": 257.73,
+       "PEN": 12.92
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Iceland Besta Deild Men",
+     "label": "Iceland Besta Deild Men",
+     "legs": 151,
+     "share": 0.0013,
+     "betslips": 82,
+     "turnover": {
+      "by_currency": {
+       "EUR": 57.45,
+       "PEN": 272.98
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Finland Veikkausliiga",
+     "label": "Finland Veikkausliiga",
+     "legs": 71,
+     "share": 0.0006,
+     "betslips": 33,
+     "turnover": {
+      "by_currency": {
+       "EUR": 86.69,
+       "PEN": 3.0
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Spain LaLiga",
+     "label": "Spain LaLiga",
+     "legs": 59,
+     "share": 0.0005,
+     "betslips": 40,
+     "turnover": {
+      "by_currency": {
+       "EUR": 19.11
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Norway Division 1",
+     "label": "Norway Division 1",
+     "legs": 51,
+     "share": 0.0005,
+     "betslips": 33,
+     "turnover": {
+      "by_currency": {
+       "EUR": 31.19,
+       "PEN": 4.0
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Latvia Virsliga",
+     "label": "Latvia Virsliga",
+     "legs": 48,
+     "share": 0.0004,
+     "betslips": 44,
+     "turnover": {
+      "by_currency": {
+       "EUR": 138.51,
+       "PEN": 33.0
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Kazakhstan Premier League",
+     "label": "Kazakhstan Premier League",
+     "legs": 45,
+     "share": 0.0004,
+     "betslips": 29,
+     "turnover": {
+      "by_currency": {
+       "EUR": 39.93
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Argentina Primera Nacional",
+     "label": "Argentina Primera Nacional",
+     "legs": 44,
+     "share": 0.0004,
+     "betslips": 26,
+     "turnover": {
+      "by_currency": {
+       "EUR": 6.52
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 25.0
+     }
+    },
+    {
+     "key": "Sweden Superettan",
+     "label": "Sweden Superettan",
+     "legs": 37,
+     "share": 0.0003,
+     "betslips": 26,
+     "turnover": {
+      "by_currency": {
+       "EUR": 83.17,
+       "PEN": 10.0
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Lithuania A Lyga",
+     "label": "Lithuania A Lyga",
+     "legs": 32,
+     "share": 0.0003,
+     "betslips": 24,
+     "turnover": {
+      "by_currency": {
+       "EUR": 72.39,
+       "PEN": 43.0
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "__other__",
+     "label": "Other (41 more)",
+     "legs": 253,
+     "share": 0.0022,
+     "betslips": 196,
+     "turnover": {
+      "by_currency": {
+       "EUR": 600.72,
+       "PEN": 76.49
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    }
+   ],
+   "notes": [
+    "Ranked by legs; totals cover all 56 values.",
+    "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure."
+   ],
+   "truncation": null
+  },
+  "by_fixture": {
+   "id": "flow.by_fixture",
+   "title": "Legs by fixture",
+   "grain": "leg",
+   "rows": [
+    {
+     "key": "36966612",
+     "label": "France - Iraq",
+     "legs": 4612,
+     "share": 0.0409,
+     "betslips": 4455,
+     "turnover": {
+      "by_currency": {
+       "EUR": 39467.63,
+       "PEN": 6231.05,
+       "USD": 1.67
+      },
+      "unresolved_rows": 15,
+      "unresolved_units": 268.36
+     }
+    },
+    {
+     "key": "33890416",
+     "label": "France - Senegal",
+     "legs": 4145,
+     "share": 0.0368,
+     "betslips": 3993,
+     "turnover": {
+      "by_currency": {
+       "EUR": 44048.44,
+       "PEN": 13262.67
+      },
+      "unresolved_rows": 40,
+      "unresolved_units": 969.58
+     }
+    },
+    {
+     "key": "36024520",
+     "label": "Portugal - Democratic Republic of the Congo",
+     "legs": 3996,
+     "share": 0.0355,
+     "betslips": 3819,
+     "turnover": {
+      "by_currency": {
+       "EUR": 45649.54,
+       "PEN": 7630.12,
+       "USD": 18.24
+      },
+      "unresolved_rows": 26,
+      "unresolved_units": 581.5
+     }
+    },
+    {
+     "key": "36966609",
+     "label": "Argentina - Austria",
+     "legs": 3950,
+     "share": 0.035,
+     "betslips": 3775,
+     "turnover": {
+      "by_currency": {
+       "EUR": 45564.2,
+       "PEN": 9998.69
+      },
+      "unresolved_rows": 13,
+      "unresolved_units": 247.8
+     }
+    },
+    {
+     "key": "33890313",
+     "label": "Spain - Cape Verde",
+     "legs": 3936,
+     "share": 0.0349,
+     "betslips": 3896,
+     "turnover": {
+      "by_currency": {
+       "EUR": 53292.19,
+       "PEN": 5444.34,
+       "USD": 12.5
+      },
+      "unresolved_rows": 46,
+      "unresolved_units": 1155.28
+     }
+    },
+    {
+     "key": "33890444",
+     "label": "England - Croatia",
+     "legs": 3693,
+     "share": 0.0328,
+     "betslips": 3519,
+     "turnover": {
+      "by_currency": {
+       "EUR": 38638.8,
+       "PEN": 4416.9,
+       "USD": 129.0
+      },
+      "unresolved_rows": 27,
+      "unresolved_units": 565.18
+     }
+    },
+    {
+     "key": "36966591",
+     "label": "Spain - Saudi Arabia",
+     "legs": 3642,
+     "share": 0.0323,
+     "betslips": 3555,
+     "turnover": {
+      "by_currency": {
+       "EUR": 35418.16,
+       "PEN": 4150.32,
+       "USD": 1.67
+      },
+      "unresolved_rows": 21,
+      "unresolved_units": 403.71
+     }
+    },
+    {
+     "key": "33890291",
+     "label": "Brazil - Morocco",
+     "legs": 3120,
+     "share": 0.0277,
+     "betslips": 3083,
+     "turnover": {
+      "by_currency": {
+       "EUR": 36244.08,
+       "PEN": 12668.64,
+       "USD": 2.0
+      },
+      "unresolved_rows": 69,
+      "unresolved_units": 1426.65
+     }
+    },
+    {
+     "key": "36966485",
+     "label": "Brazil - Haiti",
+     "legs": 2735,
+     "share": 0.0243,
+     "betslips": 2664,
+     "turnover": {
+      "by_currency": {
+       "EUR": 19715.76,
+       "PEN": 3191.22,
+       "USD": 1.67
+      },
+      "unresolved_rows": 8,
+      "unresolved_units": 100.24
+     }
+    },
+    {
+     "key": "36966553",
+     "label": "Germany - Ivory Coast",
+     "legs": 2679,
+     "share": 0.0238,
+     "betslips": 2578,
+     "turnover": {
+      "by_currency": {
+       "EUR": 24068.14,
+       "PEN": 5736.3,
+       "USD": 20.0
+      },
+      "unresolved_rows": 10,
+      "unresolved_units": 321.16
+     }
+    },
+    {
+     "key": "36024518",
+     "label": "Iraq - Norway",
+     "legs": 2622,
+     "share": 0.0233,
+     "betslips": 2511,
+     "turnover": {
+      "by_currency": {
+       "EUR": 20269.38,
+       "PEN": 5856.02,
+       "USD": 53.48
+      },
+      "unresolved_rows": 17,
+      "unresolved_units": 215.82
+     }
+    },
+    {
+     "key": "33890211",
+     "label": "Argentina - Algeria",
+     "legs": 2602,
+     "share": 0.0231,
+     "betslips": 2555,
+     "turnover": {
+      "by_currency": {
+       "EUR": 19266.75,
+       "PEN": 10618.97,
+       "USD": 57.75
+      },
+      "unresolved_rows": 21,
+      "unresolved_units": 405.41
+     }
+    },
+    {
+     "key": "33890299",
+     "label": "Belgium - Egypt",
+     "legs": 2375,
+     "share": 0.0211,
+     "betslips": 2340,
+     "turnover": {
+      "by_currency": {
+       "EUR": 35070.05,
+       "PEN": 4904.56
+      },
+      "unresolved_rows": 22,
+      "unresolved_units": 423.43
+     }
+    },
+    {
+     "key": "36966593",
+     "label": "Belgium - Iran",
+     "legs": 2353,
+     "share": 0.0209,
+     "betslips": 2264,
+     "turnover": {
+      "by_currency": {
+       "EUR": 27249.91,
+       "PEN": 27099.44,
+       "USD": 24.67
+      },
+      "unresolved_rows": 9,
+      "unresolved_units": 173.33
+     }
+    },
+    {
+     "key": "33890306",
+     "label": "Germany - Cura\u00e7ao",
+     "legs": 2344,
+     "share": 0.0208,
+     "betslips": 2304,
+     "turnover": {
+      "by_currency": {
+       "EUR": 28601.41,
+       "PEN": 3900.65,
+       "USD": 20.0
+      },
+      "unresolved_rows": 39,
+      "unresolved_units": 846.28
+     }
+    },
+    {
+     "key": "__other__",
+     "label": "Other (438 more)",
+     "legs": 63913,
+     "share": 0.567,
+     "betslips": 48470,
+     "turnover": {
+      "by_currency": {
+       "EUR": 701211.05,
+       "PEN": 258888.51,
+       "USD": 271.0
+      },
+      "unresolved_rows": 1067,
+      "unresolved_units": 24146.52
+     }
+    }
+   ],
+   "notes": [
+    "Ranked by legs; totals cover all 453 values.",
+    "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure."
+   ],
+   "truncation": null
+  },
+  "by_region": {
+   "id": "flow.by_region",
+   "title": "Betslips by region",
+   "grain": "betslip",
+   "rows": [
+    {
+     "key": "EUSKADI",
+     "label": "EUSKADI",
+     "betslips": 20701,
+     "share": 0.2673,
+     "turnover": {
+      "by_currency": {
+       "EUR": 191381.54
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "ESTATAL",
+     "label": "ESTATAL",
+     "betslips": 20538,
+     "share": 0.2652,
+     "turnover": {
+      "by_currency": {
+       "EUR": 509824.44
+      },
+      "unresolved_rows": 1234,
+      "unresolved_units": 28729.04
+     }
+    },
+    {
+     "key": "PERU",
+     "label": "PERU",
+     "betslips": 7606,
+     "share": 0.0982,
+     "turnover": {
+      "by_currency": {
+       "PEN": 375804.75,
+       "USD": 596.18
+      },
+      "unresolved_rows": 115,
+      "unresolved_units": 2401.38
+     }
+    },
+    {
+     "key": "VALENCIA",
+     "label": "VALENCIA",
+     "betslips": 7134,
+     "share": 0.0921,
+     "turnover": {
+      "by_currency": {
+       "EUR": 87318.42
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "GALICIA",
+     "label": "GALICIA",
+     "betslips": 3832,
+     "share": 0.0495,
+     "turnover": {
+      "by_currency": {
+       "EUR": 25004.88
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "ANDALUCIA",
+     "label": "ANDALUCIA",
+     "betslips": 3280,
+     "share": 0.0424,
+     "turnover": {
+      "by_currency": {
+       "EUR": 74484.16
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "NAVARRA",
+     "label": "NAVARRA",
+     "betslips": 3011,
+     "share": 0.0389,
+     "turnover": {
+      "by_currency": {
+       "EUR": 24967.98
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "ARAGON",
+     "label": "ARAGON",
+     "betslips": 2679,
+     "share": 0.0346,
+     "turnover": {
+      "by_currency": {
+       "EUR": 16602.98
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "CATALUNYA",
+     "label": "CATALUNYA",
+     "betslips": 2234,
+     "share": 0.0289,
+     "turnover": {
+      "by_currency": {
+       "EUR": 63219.43
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "LA RIOJA",
+     "label": "LA RIOJA",
+     "betslips": 1955,
+     "share": 0.0252,
+     "turnover": {
+      "by_currency": {
+       "EUR": 28098.24
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "MADRID",
+     "label": "MADRID",
+     "betslips": 1208,
+     "share": 0.0156,
+     "turnover": {
+      "by_currency": {
+       "EUR": 29154.34
+      },
+      "unresolved_rows": 16,
+      "unresolved_units": 315.41
+     }
+    },
+    {
+     "key": "MURCIA",
+     "label": "MURCIA",
+     "betslips": 1114,
+     "share": 0.0144,
+     "turnover": {
+      "by_currency": {
+       "EUR": 11745.41
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "CANTABRIA",
+     "label": "CANTABRIA",
+     "betslips": 403,
+     "share": 0.0052,
+     "turnover": {
+      "by_currency": {
+       "EUR": 5917.14
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "MELILLA",
+     "label": "MELILLA",
+     "betslips": 392,
+     "share": 0.0051,
+     "turnover": {
+      "by_currency": {
+       "EUR": 7711.54
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "CANARIAS",
+     "label": "CANARIAS",
+     "betslips": 381,
+     "share": 0.0049,
+     "turnover": {
+      "by_currency": {
+       "EUR": 15749.25
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "__other__",
+     "label": "Other (6 more)",
+     "betslips": 964,
+     "share": 0.0124,
+     "turnover": {
+      "by_currency": {
+       "EUR": 25251.98
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 10.0
+     }
+    }
+   ],
+   "notes": [
+    "Ranked by betslips; totals cover all 21 values."
+   ],
+   "truncation": null
+  },
+  "by_bet_type": {
+   "id": "flow.by_bet_type",
+   "title": "Betslips by bet type",
+   "grain": "betslip",
+   "rows": [
+    {
+     "key": "COMBINED",
+     "label": "COMBINED",
+     "betslips": 39402,
+     "share": 0.5089,
+     "turnover": {
+      "by_currency": {
+       "EUR": 208305.44,
+       "PEN": 21327.28,
+       "USD": 83.48
+      },
+      "unresolved_rows": 217,
+      "unresolved_units": 2512.0
+     }
+    },
+    {
+     "key": "SIMPLE",
+     "label": "SIMPLE",
+     "betslips": 38030,
+     "share": 0.4911,
+     "turnover": {
+      "by_currency": {
+       "EUR": 908126.29,
+       "PEN": 354477.47,
+       "USD": 512.7
+      },
+      "unresolved_rows": 1149,
+      "unresolved_units": 28943.83
+     }
+    }
+   ],
+   "notes": [
+    "Ranked by betslips; totals cover all 2 values."
+   ],
+   "truncation": null
+  },
+  "by_selection": {
+   "id": "flow.by_selection",
+   "title": "Top selections",
+   "grain": "leg",
+   "rows": [
+    {
+     "key": "1-X-2 / 2 goals Up|1-X-2 / Ventaja 2 goles|1",
+     "label": "Home win (1)",
+     "legs": 9974,
+     "share": 0.2182,
+     "betslips": 6575,
+     "turnover": {
+      "by_currency": {
+       "EUR": 184520.25,
+       "PEN": 45587.74,
+       "USD": 14.22
+      },
+      "unresolved_rows": 7,
+      "unresolved_units": 104.15
+     }
+    },
+    {
+     "key": "1-X-2 / 2 goals Up|1-X-2 / Ventaja 2 goles|2",
+     "label": "Away win (2)",
+     "legs": 4863,
+     "share": 0.1064,
+     "betslips": 3684,
+     "turnover": {
+      "by_currency": {
+       "EUR": 87857.93,
+       "PEN": 19707.79,
+       "USD": 30.14
+      },
+      "unresolved_rows": 7,
+      "unresolved_units": 508.33
+     }
+    },
+    {
+     "key": "To score 2 or more goals (Star Substitute)|Marcar 2 goles o m\u00e1s (Suplente Estrella)|Mbappe",
+     "label": "Mbappe",
+     "legs": 976,
+     "share": 0.0214,
+     "betslips": 889,
+     "turnover": {
+      "by_currency": {
+       "EUR": 9687.26,
+       "PEN": 615.24
+      },
+      "unresolved_rows": 3,
+      "unresolved_units": 50.0
+     }
+    },
+    {
+     "key": "To score 2 or more goals (Star Substitute)|Marcar 2 goles o m\u00e1s (Suplente Estrella)|Cristiano Ronaldo",
+     "label": "Cristiano Ronaldo",
+     "legs": 673,
+     "share": 0.0147,
+     "betslips": 620,
+     "turnover": {
+      "by_currency": {
+       "EUR": 6394.17,
+       "PEN": 808.58
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 93.53
+     }
+    },
+    {
+     "key": "To score 2 or more goals (Star Substitute)|Marcar 2 goles o m\u00e1s (Suplente Estrella)|Lionel Messi",
+     "label": "Lionel Messi",
+     "legs": 638,
+     "share": 0.014,
+     "betslips": 559,
+     "turnover": {
+      "by_currency": {
+       "EUR": 4706.64,
+       "PEN": 225.83
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "To score 2 or more goals (Star Substitute)|Marcar 2 goles o m\u00e1s (Suplente Estrella)|Harry Kane",
+     "label": "Harry Kane",
+     "legs": 604,
+     "share": 0.0132,
+     "betslips": 581,
+     "turnover": {
+      "by_currency": {
+       "EUR": 4791.4,
+       "PEN": 204.2
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 19.0
+     }
+    },
+    {
+     "key": "To score 2 or more goals (Star Substitute)|Marcar 2 goles o m\u00e1s (Suplente Estrella)|Haaland",
+     "label": "Haaland",
+     "legs": 500,
+     "share": 0.0109,
+     "betslips": 426,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1678.44,
+       "PEN": 150.33
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 10.0
+     }
+    },
+    {
+     "key": "Anytime goalscorer (Star Substitute)|Goleador durante el partido (Suplente Estrella)|Mbappe",
+     "label": "Mbappe",
+     "legs": 476,
+     "share": 0.0104,
+     "betslips": 472,
+     "turnover": {
+      "by_currency": {
+       "EUR": 6718.22,
+       "PEN": 313.68
+      },
+      "unresolved_rows": 3,
+      "unresolved_units": 18.36
+     }
+    },
+    {
+     "key": "Anytime goalscorer (Star Substitute)|Goleador durante el partido (Suplente Estrella)|Lionel Messi",
+     "label": "Lionel Messi",
+     "legs": 402,
+     "share": 0.0088,
+     "betslips": 396,
+     "turnover": {
+      "by_currency": {
+       "EUR": 6657.36,
+       "PEN": 253.3
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 12.5
+     }
+    },
+    {
+     "key": "To score or assist (Star Substitute)|Marcar gol o asistir (Suplente Estrella)|Lionel Messi",
+     "label": "Lionel Messi",
+     "legs": 399,
+     "share": 0.0087,
+     "betslips": 388,
+     "turnover": {
+      "by_currency": {
+       "PEN": 566.6,
+       "EUR": 1613.26,
+       "USD": 10.0
+      },
+      "unresolved_rows": 2,
+      "unresolved_units": 11.9
+     }
+    },
+    {
+     "key": "Anytime goalscorer (Star Substitute)|Goleador durante el partido (Suplente Estrella)|Harry Kane",
+     "label": "Harry Kane",
+     "legs": 392,
+     "share": 0.0086,
+     "betslips": 374,
+     "turnover": {
+      "by_currency": {
+       "EUR": 4122.3,
+       "PEN": 69.46
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 25.0
+     }
+    },
+    {
+     "key": "Anytime goalscorer (Star Substitute)|Goleador durante el partido (Suplente Estrella)|Cristiano Ronaldo",
+     "label": "Cristiano Ronaldo",
+     "legs": 375,
+     "share": 0.0082,
+     "betslips": 371,
+     "turnover": {
+      "by_currency": {
+       "EUR": 5385.72,
+       "PEN": 546.03,
+       "USD": 15.0
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 25.0
+     }
+    },
+    {
+     "key": "To score or assist (Star Substitute)|Marcar gol o asistir (Suplente Estrella)|Harry Kane",
+     "label": "Harry Kane",
+     "legs": 365,
+     "share": 0.008,
+     "betslips": 361,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1283.62,
+       "PEN": 425.87
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "To score or assist (Star Substitute)|Marcar gol o asistir (Suplente Estrella)|Cristiano Ronaldo",
+     "label": "Cristiano Ronaldo",
+     "legs": 340,
+     "share": 0.0074,
+     "betslips": 337,
+     "turnover": {
+      "by_currency": {
+       "EUR": 1851.39,
+       "PEN": 1241.98
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 5.0
+     }
+    },
+    {
+     "key": "Anytime goalscorer (Star Substitute)|Goleador durante el partido (Suplente Estrella)|Haaland",
+     "label": "Haaland",
+     "legs": 329,
+     "share": 0.0072,
+     "betslips": 325,
+     "turnover": {
+      "by_currency": {
+       "EUR": 2306.39,
+       "PEN": 153.67
+      },
+      "unresolved_rows": 1,
+      "unresolved_units": 12.5
+     }
+    },
+    {
+     "key": "__other__",
+     "label": "Other (1,665 more)",
+     "legs": 24398,
+     "share": 0.5338,
+     "betslips": 18568,
+     "turnover": {
+      "by_currency": {
+       "EUR": 205608.17,
+       "PEN": 39918.97,
+       "USD": 151.27
+      },
+      "unresolved_rows": 334,
+      "unresolved_units": 7401.36
+     }
+    }
+   ],
+   "notes": [
+    "Scoped to the 5 busiest markets. Selection identity includes the player, so different players' lines never share a row.",
+    "Ranked by legs; totals cover all 1,680 values.",
+    "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure.",
+    "Bet builders excluded: 11,941 legs across 2,277 distinct combinations \u2014 free-text selections that do not aggregate meaningfully."
+   ],
+   "truncation": null
+  },
+  "by_player": {
+   "id": "flow.by_player",
+   "title": "Top players",
+   "grain": "leg",
+   "rows": [
+    {
+     "key": "Mbappe",
+     "label": "Mbappe",
+     "legs": 2906,
+     "share": 0.0657,
+     "betslips": 2785,
+     "turnover": {
+      "by_currency": {
+       "EUR": 31305.51,
+       "PEN": 5593.53
+      },
+      "unresolved_rows": 17,
+      "unresolved_units": 345.86
+     }
+    },
+    {
+     "key": "Cristiano Ronaldo",
+     "label": "Cristiano Ronaldo",
+     "legs": 2734,
+     "share": 0.0618,
+     "betslips": 2619,
+     "turnover": {
+      "by_currency": {
+       "EUR": 30128.74,
+       "PEN": 6537.09,
+       "USD": 15.29
+      },
+      "unresolved_rows": 12,
+      "unresolved_units": 308.53
+     }
+    },
+    {
+     "key": "Lionel Messi",
+     "label": "Lionel Messi",
+     "legs": 2315,
+     "share": 0.0523,
+     "betslips": 2184,
+     "turnover": {
+      "by_currency": {
+       "EUR": 21803.05,
+       "PEN": 1897.4,
+       "USD": 12.5
+      },
+      "unresolved_rows": 5,
+      "unresolved_units": 74.4
+     }
+    },
+    {
+     "key": "Harry Kane",
+     "label": "Harry Kane",
+     "legs": 2207,
+     "share": 0.0499,
+     "betslips": 2122,
+     "turnover": {
+      "by_currency": {
+       "EUR": 21045.66,
+       "PEN": 1276.99,
+       "USD": 2.5
+      },
+      "unresolved_rows": 9,
+      "unresolved_units": 256.5
+     }
+    },
+    {
+     "key": "Haaland",
+     "label": "Haaland",
+     "legs": 1652,
+     "share": 0.0374,
+     "betslips": 1550,
+     "turnover": {
+      "by_currency": {
+       "EUR": 7283.96,
+       "PEN": 1423.91
+      },
+      "unresolved_rows": 7,
+      "unresolved_units": 99.16
+     }
+    },
+    {
+     "key": "Vin\u00edcius",
+     "label": "Vin\u00edcius",
+     "legs": 1308,
+     "share": 0.0296,
+     "betslips": 1276,
+     "turnover": {
+      "by_currency": {
+       "EUR": 12912.4,
+       "PEN": 1327.45
+      },
+      "unresolved_rows": 19,
+      "unresolved_units": 355.83
+     }
+    },
+    {
+     "key": "Oyarzabal",
+     "label": "Oyarzabal",
+     "legs": 1151,
+     "share": 0.026,
+     "betslips": 1114,
+     "turnover": {
+      "by_currency": {
+       "EUR": 10506.7,
+       "PEN": 380.0,
+       "USD": 9.0
+      },
+      "unresolved_rows": 7,
+      "unresolved_units": 157.78
+     }
+    },
+    {
+     "key": "Lamine Yamal",
+     "label": "Lamine Yamal",
+     "legs": 766,
+     "share": 0.0173,
+     "betslips": 765,
+     "turnover": {
+      "by_currency": {
+       "EUR": 10075.92,
+       "USD": 2.0,
+       "PEN": 498.55
+      },
+      "unresolved_rows": 7,
+      "unresolved_units": 186.21
+     }
+    },
+    {
+     "key": "Michael Olise",
+     "label": "Michael Olise",
+     "legs": 712,
+     "share": 0.0161,
+     "betslips": 691,
+     "turnover": {
+      "by_currency": {
+       "EUR": 5891.53,
+       "PEN": 2342.96
+      },
+      "unresolved_rows": 6,
+      "unresolved_units": 212.5
+     }
+    },
+    {
+     "key": "Havertz",
+     "label": "Havertz",
+     "legs": 679,
+     "share": 0.0154,
+     "betslips": 659,
+     "turnover": {
+      "by_currency": {
+       "EUR": 6284.71,
+       "PEN": 122.28,
+       "USD": 20.0
+      },
+      "unresolved_rows": 10,
+      "unresolved_units": 335.0
+     }
+    },
+    {
+     "key": "Raphinha",
+     "label": "Raphinha",
+     "legs": 614,
+     "share": 0.0139,
+     "betslips": 604,
+     "turnover": {
+      "by_currency": {
+       "EUR": 7326.59,
+       "PEN": 626.09
+      },
+      "unresolved_rows": 8,
+      "unresolved_units": 172.5
+     }
+    },
+    {
+     "key": "Valverde",
+     "label": "Valverde",
+     "legs": 563,
+     "share": 0.0127,
+     "betslips": 529,
+     "turnover": {
+      "by_currency": {
+       "EUR": 5604.39,
+       "PEN": 136.34,
+       "USD": 14.17
+      },
+      "unresolved_rows": 3,
+      "unresolved_units": 75.0
+     }
+    },
+    {
+     "key": "Ferran",
+     "label": "Ferran",
+     "legs": 562,
+     "share": 0.0127,
+     "betslips": 555,
+     "turnover": {
+      "by_currency": {
+       "EUR": 7714.36,
+       "PEN": 264.14
+      },
+      "unresolved_rows": 3,
+      "unresolved_units": 100.0
+     }
+    },
+    {
+     "key": "Luis Diaz",
+     "label": "Luis Diaz",
+     "legs": 499,
+     "share": 0.0113,
+     "betslips": 463,
+     "turnover": {
+      "by_currency": {
+       "EUR": 2039.54,
+       "PEN": 758.06
+      },
+      "unresolved_rows": 0,
+      "unresolved_units": 0.0
+     }
+    },
+    {
+     "key": "Breel Embolo",
+     "label": "Breel Embolo",
+     "legs": 413,
+     "share": 0.0093,
+     "betslips": 389,
+     "turnover": {
+      "by_currency": {
+       "EUR": 3367.6,
+       "PEN": 304.87,
+       "USD": 3.33
+      },
+      "unresolved_rows": 4,
+      "unresolved_units": 55.0
+     }
+    },
+    {
+     "key": "__other__",
+     "label": "Other (1,011 more)",
+     "legs": 25148,
+     "share": 0.5686,
+     "betslips": 19926,
+     "turnover": {
+      "by_currency": {
+       "EUR": 270864.95,
+       "PEN": 15879.95,
+       "USD": 91.7
+      },
+      "unresolved_rows": 433,
+      "unresolved_units": 9823.39
+     }
+    }
+   ],
+   "notes": [
+    "Resolved 44,229 of 44,237 player-centric legs (100.0%) into 1,026 names.",
+    "Ranked by legs; totals cover all 1,026 values.",
+    "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure.",
+    "Names are not entity-resolved: 'Mbappe' and 'Kylian Mbappe' would occupy separate rows. Cross-feed identity is Task 2's problem."
+   ],
+   "truncation": null
+  }
+ }
+}

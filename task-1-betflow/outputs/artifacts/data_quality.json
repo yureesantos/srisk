@@ -1,0 +1,80 @@
+{
+ "artifact": "data_quality",
+ "schema_version": 1,
+ "generated_at": "2026-07-24T02:19:46+00:00",
+ "dataset_fingerprint": "sha256:37d5b460d1cc867e",
+ "payload_hash": "sha256:f0ec9b80a904e858",
+ "environment": {
+  "python": "3.10.0",
+  "pandas": "2.1.4",
+  "numpy": "1.26.2"
+ },
+ "data": {
+  "dedup": {
+   "id": "data_quality.dedup",
+   "title": "Deduplication funnel",
+   "rows_raw": {
+    "excel_BillingByBetslips-24062026_051729.xlsx": 115769,
+    "excel_BillingByBetslips-24062026_051904.xlsx": 51334
+   },
+   "exact_dups_removed": {
+    "excel_BillingByBetslips-24062026_051729.xlsx": 36832,
+    "excel_BillingByBetslips-24062026_051904.xlsx": 17253
+   },
+   "cross_file_overlap": 301,
+   "legs": 112717,
+   "notes": [
+    "The two exports are partially disjoint slices, not copies: only 301 distinct rows appear in both, and the smaller file holds 84 fixtures the larger one lacks."
+   ]
+  },
+  "betslip_key": {
+   "id": "data_quality.betslip_key",
+   "title": "Betslip identity",
+   "collision_legs": 6706,
+   "simple_with_multiple_legs": 0,
+   "notes": [
+    "Uid plus a second-resolution timestamp collides when one customer places several single bets in the same second. Splitting the key on BetType resolves it (ADR-0003)."
+   ]
+  },
+  "placeholders": {
+   "id": "data_quality.placeholders",
+   "title": "Unresolved market templates",
+   "legs_with_placeholder": 26761,
+   "share": 0.2374,
+   "notes": [
+    "`{COMPETITOR1}` and `{COMPETITOR2}` are whole market names, not slots: they are same-game bet builders. Stripping them naively would have dumped 10.6% of legs into an unnamed bucket."
+   ]
+  },
+  "currency_unresolved": {
+   "id": "data_quality.currency_unresolved",
+   "title": "Betslips without a currency",
+   "betslips": 1366,
+   "legs": 1450,
+   "turnover_units": 31455.83,
+   "notes": [
+    "These straddle both tracks (1,310 in ESTATAL, 119 in PERU), so region cannot resolve them either. Inferring a currency would invent a number."
+   ]
+  },
+  "player_resolution": {
+   "id": "data_quality.player_resolution",
+   "title": "Player name resolution",
+   "player_centric_legs": 44237,
+   "resolved_legs": 44229,
+   "coverage": 0.9998,
+   "distinct_players": 1026,
+   "from_template": 13008,
+   "from_option": 31221,
+   "notes": [
+    "The column named `Player` holds Spanish market labels, not people. Names come from the label's data-derived suffix or from `Option`, depending on the market family (ADR-0004)."
+   ]
+  },
+  "inplay_bound": {
+   "id": "data_quality.inplay_bound",
+   "title": "In-play share",
+   "share": 0.0687,
+   "notes": [
+    "An upper bound, not a measurement: a late pre-match bet registered after the declared kick-off is indistinguishable from a true in-play bet on timestamps alone."
+   ]
+  }
+ }
+}

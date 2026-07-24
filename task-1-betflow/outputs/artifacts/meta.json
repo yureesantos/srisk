@@ -1,0 +1,257 @@
+{
+ "artifact": "meta",
+ "schema_version": 1,
+ "generated_at": "2026-07-24T02:19:46+00:00",
+ "dataset_fingerprint": "sha256:37d5b460d1cc867e",
+ "payload_hash": "sha256:f0ec9b80a904e858",
+ "environment": {
+  "python": "3.10.0",
+  "pandas": "2.1.4",
+  "numpy": "1.26.2"
+ },
+ "sections": {
+  "overview.universe": {
+   "artifact": "overview.json",
+   "path": [
+    "overview",
+    "universe"
+   ],
+   "grain": null,
+   "title": "Analysed universe"
+  },
+  "overview.turnover": {
+   "artifact": "overview.json",
+   "path": [
+    "overview",
+    "turnover"
+   ],
+   "grain": "betslip",
+   "title": "Turnover by currency"
+  },
+  "overview.monthly_betslips": {
+   "artifact": "overview.json",
+   "path": [
+    "overview",
+    "monthly_betslips"
+   ],
+   "grain": "betslip",
+   "title": "Betslips by month"
+  },
+  "data_quality.dedup": {
+   "artifact": "data_quality.json",
+   "path": [
+    "data_quality",
+    "dedup"
+   ],
+   "grain": null,
+   "title": "Deduplication funnel"
+  },
+  "data_quality.betslip_key": {
+   "artifact": "data_quality.json",
+   "path": [
+    "data_quality",
+    "betslip_key"
+   ],
+   "grain": null,
+   "title": "Betslip identity"
+  },
+  "data_quality.placeholders": {
+   "artifact": "data_quality.json",
+   "path": [
+    "data_quality",
+    "placeholders"
+   ],
+   "grain": null,
+   "title": "Unresolved market templates"
+  },
+  "data_quality.currency_unresolved": {
+   "artifact": "data_quality.json",
+   "path": [
+    "data_quality",
+    "currency_unresolved"
+   ],
+   "grain": null,
+   "title": "Betslips without a currency"
+  },
+  "data_quality.player_resolution": {
+   "artifact": "data_quality.json",
+   "path": [
+    "data_quality",
+    "player_resolution"
+   ],
+   "grain": null,
+   "title": "Player name resolution"
+  },
+  "data_quality.inplay_bound": {
+   "artifact": "data_quality.json",
+   "path": [
+    "data_quality",
+    "inplay_bound"
+   ],
+   "grain": null,
+   "title": "In-play share"
+  },
+  "flow.by_market": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_market"
+   ],
+   "grain": "leg",
+   "title": "Legs by market"
+  },
+  "flow.by_competition": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_competition"
+   ],
+   "grain": "leg",
+   "title": "Legs by competition"
+  },
+  "flow.by_fixture": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_fixture"
+   ],
+   "grain": "leg",
+   "title": "Legs by fixture"
+  },
+  "flow.by_region": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_region"
+   ],
+   "grain": "betslip",
+   "title": "Betslips by region"
+  },
+  "flow.by_bet_type": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_bet_type"
+   ],
+   "grain": "betslip",
+   "title": "Betslips by bet type"
+  },
+  "flow.by_selection": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_selection"
+   ],
+   "grain": "leg",
+   "title": "Top selections"
+  },
+  "flow.by_player": {
+   "artifact": "flow.json",
+   "path": [
+    "flow",
+    "by_player"
+   ],
+   "grain": "leg",
+   "title": "Top players"
+  },
+  "timing.phases": {
+   "artifact": "timing.json",
+   "path": [
+    "timing",
+    "phases"
+   ],
+   "grain": "leg",
+   "title": "Legs by time phase"
+  },
+  "timing.daily": {
+   "artifact": "timing.json",
+   "path": [
+    "timing",
+    "daily"
+   ],
+   "grain": "betslip",
+   "title": "Daily volume"
+  },
+  "prices.movement": {
+   "artifact": "prices.json",
+   "path": [
+    "prices",
+    "movement"
+   ],
+   "grain": "leg",
+   "title": "Sharpest pre-match price moves"
+  },
+  "prices.value_histogram": {
+   "artifact": "prices.json",
+   "path": [
+    "prices",
+    "value_histogram"
+   ],
+   "grain": "leg",
+   "title": "Distribution of captured price value"
+  },
+  "anomalies.turnover_spikes": {
+   "artifact": "anomalies.json",
+   "path": [
+    "anomalies",
+    "turnover_spikes"
+   ],
+   "grain": "betslip",
+   "title": "Turnover spikes"
+  },
+  "anomalies.abnormal_exposure": {
+   "artifact": "anomalies.json",
+   "path": [
+    "anomalies",
+    "abnormal_exposure"
+   ],
+   "grain": "leg",
+   "title": "Abnormal exposure"
+  },
+  "anomalies.sharp_moves": {
+   "artifact": "anomalies.json",
+   "path": [
+    "anomalies",
+    "sharp_moves"
+   ],
+   "grain": "leg",
+   "title": "Sharp price moves"
+  },
+  "anomalies.repeat_backing": {
+   "artifact": "anomalies.json",
+   "path": [
+    "anomalies",
+    "repeat_backing"
+   ],
+   "grain": "betslip",
+   "title": "Repeated backing of one selection"
+  },
+  "anomalies.same_second_clusters": {
+   "artifact": "anomalies.json",
+   "path": [
+    "anomalies",
+    "same_second_clusters"
+   ],
+   "grain": "leg",
+   "title": "Same-second placement clusters"
+  },
+  "sharp.flagged_windows": {
+   "artifact": "sharp.json",
+   "path": [
+    "sharp",
+    "flagged_windows"
+   ],
+   "grain": "betslip",
+   "title": "Flagged windows"
+  },
+  "sharp.eligible_windows": {
+   "artifact": "sharp.json",
+   "path": [
+    "sharp",
+    "eligible_windows"
+   ],
+   "grain": "betslip",
+   "title": "All windows eligible for flagging"
+  }
+ }
+}
