@@ -99,6 +99,15 @@ for the decisions and their rationale.
 
 ---
 
+## How this was built
+
+Both components were built with AI assistance (Claude Code), and
+[`docs/AI-PROCESS.md`](docs/AI-PROCESS.md) is the record of that process — the
+method, the tooling, and the actual prompts that shaped the work, including the
+ones that rejected earlier attempts.
+
+---
+
 ## Repository
 
 ```
@@ -109,6 +118,7 @@ betflow/            betting-flow analytics
 reconciliation/     two-feed canonical reconciliation (Python)
 docs/
   DATA-FINDINGS.md  measured facts about the source data
+  AI-PROCESS.md     how this was built, and the prompts behind it
   adr/              architecture decision records
 PRODUCT.md          who the cockpit is for and what it must do
 DESIGN.md           the visual system and its constraints
