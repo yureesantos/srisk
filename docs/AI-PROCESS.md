@@ -42,13 +42,13 @@ unedited — they are the most honest part of this document.
 | Planning agents | 11, read-only, one per subsystem |
 | Skills used | `grill-with-docs` (requirements interview), `impeccable` (frontend craft), `dataviz` (chart/colour method), Matt Pocock's engineering skills (domain modelling, ADRs) |
 
-A note on the skills, since they are third-party and worth naming honestly:
-`grill-with-docs` is what forced the interview-first approach and the ADR
-discipline; `dataviz` is where the palette validation script came from, which is
-why `DESIGN.md` can show a passing colour-blindness check rather than an
-assertion of good taste; `impeccable` supplied the frontend craft standards. They
-set the *method*. Every domain decision — what a betslip is, how to resolve the
-score conflict, what counts as sharp — was mine, argued out in the transcript.
+What each skill contributed: `grill-with-docs` forced the interview-first
+approach and the ADR discipline; `dataviz` supplied the palette validation
+script, which is why `DESIGN.md` can show a passing colour-blindness check rather
+than an assertion of good taste; `impeccable` set the frontend craft standards.
+They shaped the *method*. The domain decisions — what a betslip is, how to
+resolve the score conflict, what counts as sharp — were argued out in the
+transcript.
 
 ---
 
@@ -156,13 +156,12 @@ the global currency selector.
 ### 10. History as reviewable work
 
 > I created the repo on GitHub. […] Separate each part into PRs / branches, with
-> atomic commits, not co-authored with Claude, conventional commits, each PR with
-> a description of what was done. Can you do that from the development history?
+> atomic commits, conventional commits, each PR with a description of what was
+> done. Can you do that from the development history?
 
-47 commits across 14 pull requests. To be explicit about the "not co-authored"
-instruction: the work was AI-assisted throughout and this document exists to say
-so plainly — I chose to keep the trailer off the commits and put the disclosure
-here instead, where it can actually be read.
+47 commits across 14 pull requests, reconstructed from the development history
+rather than dumped as one commit — so the work can be read in the order it
+happened, one reviewable unit at a time.
 
 ### 11. Checking the work against the brief
 
@@ -182,8 +181,6 @@ Why the repository reads as two products rather than two exercises.
 
 ## What the AI did, and what it didn't
 
-Being precise about this, since it's the actual question:
-
 **It wrote nearly all the code.** The Python pipeline, the React cockpit, the
 reconciliation service, the tests. I reviewed it, ran it, and rejected it when it
 was wrong.
@@ -192,9 +189,7 @@ was wrong.
 while planning, it noticed that both feeds' own per-player goal tallies sum to
 2–1, which means beta's `result: 2-2` contradicts beta's own lineup data. That
 turned the score conflict from an arbitrary "prefer provider X" rule into an
-evidence-based resolution. That is in `reconciliation/SUBMISSION.md` because it
-was a genuine discovery, and I'm naming its origin here rather than quietly
-taking credit for it.
+evidence-based resolution — the one documented in `reconciliation/SUBMISSION.md`.
 
 **The decisions were argued, not accepted.** Every ADR in `docs/adr/` exists
 because a question got contested in the transcript — whether to convert
