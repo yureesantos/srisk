@@ -24,7 +24,7 @@ import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 
-INSERT_SQL = "INSERT INTO srisk.betslip_leg FORMAT JSONEachRow"
+TABLE = "betslip_leg"
 
 # Columns in schema order. Anything the source does not carry is derived here or
 # defaulted — the table has no nullable columns by design.
@@ -82,7 +82,11 @@ class Inserter:
                 "user": self.user,
                 "password": self.password,
                 "database": self.database,
-                "query": INSERT_SQL,
+                # Qualified with the database so a caller pointed at a different
+                # one actually writes there. Hardcoding `srisk.` here meant the
+                # --database flag was silently ignored, which is how two
+                # concurrent workstreams ended up writing to the same table.
+                "query": f"INSERT INTO {self.database}.{TABLE} FORMAT JSONEachRow",
                 # Let the server accept a batch whose rows arrive slightly out of
                 # order relative to the sort key; ordering is the merge's job.
                 "input_format_import_nested_json": 1,
@@ -124,7 +128,7 @@ class Inserter:
                 "database": self.database,
                 "query": (
                     "SELECT count() FROM system.parts "
-                    "WHERE database='srisk' AND table='betslip_leg' AND active"
+                    f"WHERE database='{self.database}' AND table='{TABLE}' AND active"
                 ),
             }
         )

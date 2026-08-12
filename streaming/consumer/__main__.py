@@ -23,7 +23,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "betflow"))
 
-from src.load import normalise_market  # noqa: E402
+from src.load import normalise_market, normalise_management_unit  # noqa: E402
 
 from .canonical import row_key  # noqa: E402
 from .insert import Inserter  # noqa: E402
@@ -59,7 +59,12 @@ def to_row(event: dict) -> dict:
         "market_normalised": normalise_market(event["market"]),
         "player": event["player"],
         "selection": event["selection"],
-        "region": event["region"],
+        # `RETABET EUSKADI` and `EUSKADI` are one region on different systems,
+        # and `CATALUNYA RETA` carries the brand as a suffix. Normalising at
+        # ingest keeps one region as one row in every breakdown; leaving it to
+        # the reader split ESTATAL from RETABET ESTATAL and inflated the region
+        # count from 16 to 24.
+        "region": normalise_management_unit(event["region"]),
         "currency": event["currency"],
         "price": event["price"],
         "turnover": event["turnover"],
@@ -132,6 +137,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--batch-size", type=int, default=10_000)
     parser.add_argument("--flush-ms", type=int, default=500)
     parser.add_argument("--url", default=DEFAULT_URL)
+    parser.add_argument("--database", default="srisk")
     parser.add_argument("--brokers", default="localhost:19092")
     parser.add_argument("--topic", default="betslips")
     parser.add_argument("--group", default="betflow-consumer")
@@ -139,7 +145,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--stats-interval", type=float, default=5.0)
     args = parser.parse_args(argv)
 
-    inserter = Inserter(url=args.url)
+    inserter = Inserter(url=args.url, database=args.database)
     events = (
         iter_kafka(args.brokers, args.topic, args.group, args.idle_timeout)
         if args.source == "kafka"

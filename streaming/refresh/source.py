@@ -61,7 +61,11 @@ SELECT_COLUMNS = """
 # Every read collapses. ADR-0012: omitting FINAL does not merely inflate — it
 # can invert the sign of GGR, and it is intermittent, because a background merge
 # makes the wrong query start returning the right answer.
-BASE_QUERY = f"SELECT {SELECT_COLUMNS} FROM srisk.betslip_leg FINAL"
+# The table is unqualified: the database comes from the connection, so a
+# caller pointed at another one actually reads there. A qualified name
+# silently ignores the parameter, which is how two workstreams ended up
+# sharing one table.
+BASE_QUERY = f"SELECT {SELECT_COLUMNS} FROM betslip_leg FINAL"
 
 DEFAULT_URL = "http://localhost:18123"
 
@@ -94,7 +98,7 @@ def watermark(
         SELECT max(version)      AS watermark,
                count()           AS rows_stored,
                uniqExact(row_key) AS identities
-        FROM srisk.betslip_leg FORMAT TSV
+        FROM betslip_leg FORMAT TSV
     """
     line = _run(url, query, user, password, database).strip().split("\t")
     return {
