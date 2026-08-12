@@ -33,3 +33,6 @@ data/raw/
 
 # Parsed-export cache (derived from data/raw/*.xlsx, rebuilt on demand)
 *.cache.pkl
+
+# Generated streaming artifacts (rebuilt by the refresh job)
+streaming/out/
