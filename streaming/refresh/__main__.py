@@ -31,6 +31,7 @@ sys.path.insert(0, str(REPO / "betflow"))
 from src import pipeline as batch  # noqa: E402
 from src.load import _enrich  # noqa: E402
 
+from .aggregate import Aggregator  # noqa: E402
 from .source import DEFAULT_URL, read_legs, watermark  # noqa: E402
 
 # Per-class refresh cadence, ADR-0009. The costs below are measured on 76,603
@@ -60,7 +61,9 @@ CLASS_ARTIFACTS = {
 CLASS_INTERVAL = {1: 5.0, 2: 60.0, 3: 300.0}
 
 
-def build_once(url: str, classes: set[int], where: str | None = None) -> dict:
+def build_once(
+    url: str, classes: set[int], where: str | None = None, database: str = "srisk"
+) -> dict:
     """Compute the requested classes only, and stamp the envelope.
 
     Class 3 dominates the cost (3.3s of 4.6s), so computing it on class 1's
@@ -68,26 +71,34 @@ def build_once(url: str, classes: set[int], where: str | None = None) -> dict:
     classes are therefore separable here, not merely labelled downstream.
     """
     started = time.monotonic()
+    position = watermark(url=url, database=database)
 
-    position = watermark(url=url)
-    raw = read_legs(url=url, where=where)
+    aggregator = Aggregator(url=url, database=database)
+
+    # Class 1 never reads rows. Its figures come back already reduced from
+    # ClickHouse — tens of rows rather than tens of millions — which is the
+    # whole point of the migration: at 20M rows, transferring and parsing into
+    # pandas costs ~11s before any aggregation, against 2.73s to aggregate in
+    # the engine.
+    #
+    # Classes 2 and 3 still need the rows, because the price reference and the
+    # sharp test run in validated Python (ADR-0006). They are read only when
+    # requested, so a class-1 tick never pays for them.
+    needs_rows = bool({2, 3} & classes)
+    raw = read_legs(url=url, where=where, database=database) if needs_rows else None
     read_seconds = time.monotonic() - started
 
-    if raw.empty:
-        raise SystemExit("no rows in srisk.betslip_leg — run the consumer first")
+    if needs_rows and (raw is None or raw.empty):
+        raise SystemExit("no rows in betslip_leg — run the consumer first")
 
     analysis_started = time.monotonic()
 
-    # `_enrich` derives region, betslip_id, minutes_to_kickoff and the rest. It
-    # is the batch pipeline's own function: betslip grain (ADR-0003) is
-    # reconstructed by the code that was validated, not by a SQL translation.
-    legs = _enrich(raw)
+    # `_enrich` derives betslip_id, minutes_to_kickoff and the rest for the
+    # classes that still run in pandas.
+    legs = _enrich(raw) if needs_rows else None
 
-    # Price analysis feeds classes 2 and 3 (sharp needs price_value), so it runs
-    # whenever either is requested — never for class 1 alone.
-    needs_prices = bool({2, 3} & classes)
     movements, price_report = None, None
-    if needs_prices:
+    if needs_rows:
         legs, movements, price_report = batch.prices_analyse(legs)
 
     # `betflow.analyse` builds every table in one call, including concentration
@@ -96,36 +107,69 @@ def build_once(url: str, classes: set[int], where: str | None = None) -> dict:
     # avoid, so class 1 calls the same module's building blocks directly instead.
     # The functions are the batch pipeline's own; only the orchestration differs.
     bf = batch.betflow_module
-    tables = batch.betflow_analyse(legs, movements) if (2 in classes or 3 in classes) else None
-    betslips = bf._betslip_frame(legs).reset_index()
-    report = _StreamLoadReport(len(raw), betslips=len(betslips))
+    tables = batch.betflow_analyse(legs, movements) if needs_rows else None
+    betslips = bf._betslip_frame(legs).reset_index() if needs_rows else None
+    report = (
+        _StreamLoadReport(len(raw), betslips=len(betslips)) if needs_rows else None
+    )
 
     payload: dict = {}
 
     if 1 in classes:
-        flow_tables = tables or _class1_tables(bf, legs, betslips)
-        payload["overview"] = batch._build_overview(legs, betslips, report, flow_tables)
+        # Every figure below is a GROUP BY in ClickHouse. Verified against the
+        # pandas path on the real export before being wired in: 16/16 rows exact
+        # on every breakdown, and betslip-grain totals identical (55,299).
+        universe = aggregator.universe()
+        money = aggregator.money_by_currency()
+        payload["overview"] = {
+            "universe": {
+                "id": "overview.universe",
+                "title": "Analysed universe",
+                "legs": int(universe.get("legs", 0)),
+                "betslips": int(universe.get("betslips", 0)),
+                "uids": int(universe.get("uids", 0)),
+                "fixtures": int(universe.get("fixtures", 0)),
+                "competitions": int(universe.get("competitions", 0)),
+                "date_min": str(universe.get("date_min", "")),
+                "date_max": str(universe.get("date_max", "")),
+                "inplay_legs": int(universe.get("inplay_legs", 0)),
+            },
+            "turnover": {
+                "id": "overview.turnover",
+                "title": "Turnover by currency",
+                "grain": "betslip",
+                **money,
+            },
+        }
         payload["flow"] = {
-            "by_market": batch._table_to_dict(flow_tables.by_market, "flow.by_market", "Legs by market"),
-            "by_competition": batch._table_to_dict(
-                flow_tables.by_competition, "flow.by_competition", "Legs by competition"
-            ),
-            "by_fixture": batch._table_to_dict(flow_tables.by_fixture, "flow.by_fixture", "Legs by fixture"),
-            "by_region": batch._table_to_dict(flow_tables.by_region, "flow.by_region", "Betslips by region"),
-            "by_bet_type": batch._table_to_dict(
-                flow_tables.by_bet_type, "flow.by_bet_type", "Betslips by bet type"
-            ),
-            "by_selection": batch._table_to_dict(
-                flow_tables.by_selection, "flow.by_selection", "Top selections"
-            ),
-            "by_player": batch._table_to_dict(flow_tables.by_player, "flow.by_player", "Top players"),
+            name: {
+                "id": f"flow.{name}",
+                "title": title,
+                **aggregator.breakdown(name, grain),
+            }
+            for name, grain, title in (
+                ("by_market", "leg", "Legs by market"),
+                ("by_competition", "leg", "Legs by competition"),
+                ("by_fixture", "leg", "Legs by fixture"),
+                ("by_selection", "leg", "Top selections"),
+                ("by_player", "leg", "Top players"),
+                ("by_region", "betslip", "Betslips by region"),
+                ("by_bet_type", "betslip", "Betslips by bet type"),
+            )
         }
         payload["timing"] = {
-            "phases": batch._table_to_dict(flow_tables.phases, "timing.phases", "Legs by time phase"),
-            "daily": batch._table_to_dict(
-                batch.daily_series(betslips), "timing.daily", "Daily volume"
-            ),
+            "phases": {
+                "id": "timing.phases",
+                "title": "Legs by time phase",
+                **aggregator.phases(),
+            },
+            "daily": {
+                "id": "timing.daily",
+                "title": "Daily volume",
+                **aggregator.daily(),
+            },
         }
+
     if 2 in classes:
         payload["prices"] = batch._build_prices(legs, movements, price_report)
         payload["data_quality"] = batch._build_quality(legs, report, tables, price_report)
@@ -302,6 +346,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--interval", type=float, help="override the class cadence")
     parser.add_argument("--url", default=DEFAULT_URL)
+    parser.add_argument("--database", default="srisk")
     parser.add_argument("--out", type=Path, default=REPO / "streaming" / "out" / "artifacts")
     parser.add_argument("--where", help="SQL predicate scoping a window")
     args = parser.parse_args(argv)
@@ -321,7 +366,7 @@ def main(argv: list[str] | None = None) -> int:
 
     while True:
         started = time.monotonic()
-        payload = build_once(args.url, classes, args.where)
+        payload = build_once(args.url, classes, args.where, args.database)
         write(payload, args.out)
         elapsed = time.monotonic() - started
         meta = payload["meta"]
