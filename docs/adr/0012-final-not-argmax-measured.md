@@ -39,12 +39,47 @@ SELECT round(sum(ggr), 2) AS ggr, count() AS legs FROM srisk.betslip_leg FINAL;
 
 | | GGR | Rows |
 |---|---|---|
-| No collapse | **-401,274,687.51** | 22,000,000 |
-| `FINAL` | **-329,706,563.69** | 20,000,000 |
+| No collapse | **+25,164,550.81** | 22,000,000 |
+| `FINAL` | **-43,599,923.32** | 20,000,000 |
 
-A **22% error in GGR** — 71.6M units — from omitting the collapse. ADR-0008
-predicted this failure ("silently wrong, in the direction of double-counting
-revenue"); it is now demonstrated rather than asserted.
+**The sign inverts.** Uncollapsed, the book appears to have made 25.1M; it
+actually lost 43.6M. ADR-0008 predicted this failure ("silently wrong, in the
+direction of double-counting revenue") but understated it: the error is not an
+inflation, it can reverse the answer.
+
+**The magnitude is not a constant and must not be quoted as one.** An earlier run
+of this same comparison produced a 22% overstatement rather than a sign
+inversion. Both are correct measurements of different reversal waves — the error
+depends on *which* facts were revised and by how much, so it is a property of the
+correction pattern, not of the architecture. The defensible claim is the
+mechanism, not a percentage.
+
+A single identity shows it without aggregation:
+
+```sql
+SELECT version, event_kind, ggr, turnover
+FROM srisk.betslip_leg
+WHERE row_key = 316712281023910527
+ORDER BY version;
+```
+
+| version | event_kind | ggr | turnover |
+|---|---|---|---|
+| 1755000019442 | `placement` | **-236,071.37** | 110,005.30 |
+| 1755001019442 | `reversal` | **+110,005.30** | 110,005.30 |
+
+The customer won, the house paid out 236,071 — then the bet was voided and the
+house kept the 110,005 stake. Note `ggr == turnover` on the reversal: the same
+signature measured in the real export, where 14 of 14 revised rows showed
+exactly that. Summing both rows gives -126,066; the truth is +110,005.
+
+**A further property, and the reason this is worse than a consistent error.**
+ClickHouse's background merge eventually collapses these rows on its own. Once it
+has, the uncollapsed query starts returning the right answer. The same query
+against the same table is therefore wrong or right depending on whether a merge
+has run — an intermittent fault that will not reproduce in a test and will appear
+in production under ingest pressure, which is precisely when it is least
+welcome.
 
 **The mechanism comparison, which is where ADR-0008 was wrong.**
 
@@ -184,8 +219,9 @@ measuring one when measuring is possible.
 - The number the exercise turns on now exists: **0.29s to aggregate 20M rows with
   a correct collapse**, against 8.4s for the batch pipeline over 113k rows. Three
   orders of magnitude more data, an order of magnitude less time.
-- The 22% GGR error makes ADR-0007's mutability finding concrete: it is what
-  happens if the collapse is skipped.
+- The sign-inverting GGR error makes ADR-0007's mutability finding concrete, and
+  reproducible down to a single identity: it is what happens if the collapse is
+  skipped.
 - Every claim here is reproducible from the queries above against the schema in
   `streaming/schema/`.
 - The single-pass finding changes the refresh design before it is built.
