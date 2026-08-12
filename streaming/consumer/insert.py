@@ -39,6 +39,7 @@ COLUMNS = (
     "fixture",
     "competition",
     "market",
+    "market_normalised",
     "player",
     "selection",
     "region",

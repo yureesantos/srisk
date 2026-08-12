@@ -18,9 +18,15 @@ import argparse
 import json
 import sys
 import time
+from pathlib import Path
 
-from .canonical import row_key
-from .insert import Inserter
+REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "betflow"))
+
+from src.load import normalise_market  # noqa: E402
+
+from .canonical import row_key  # noqa: E402
+from .insert import Inserter  # noqa: E402
 
 DEFAULT_URL = "http://localhost:18123"
 
@@ -41,6 +47,16 @@ def to_row(event: dict) -> dict:
         "fixture": event["fixture"],
         "competition": event["competition"],
         "market": event["market"],
+        # Normalised at ingest, not at query time. The feed ships one logical
+        # market under several labels — `Saves {PLAYER}`, `{goalnr}{ordinal} goal
+        # scorer` — and `normalise_market` collapses them (ADR-0004). Grouping by
+        # the raw label instead splits one market into several, which changes
+        # which legs share a price-reference group and therefore changes the
+        # sharp test's denominator: measured at +5.2% more scoring units.
+        #
+        # This is canonicalisation, which is the consumer's job — the same
+        # argument that puts identity hashing here rather than in SQL.
+        "market_normalised": normalise_market(event["market"]),
         "player": event["player"],
         "selection": event["selection"],
         "region": event["region"],
