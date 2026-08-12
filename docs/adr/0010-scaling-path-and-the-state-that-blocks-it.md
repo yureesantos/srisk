@@ -63,9 +63,30 @@ embarrassingly parallel across parts and vertical scaling is genuinely effective
 here; (c) split the refresh so Class 1 and Class 2 sweep independently, since
 they already have different cadences.
 
-**2. Consumer throughput.** A single consumer process doing canonicalisation and
-hashing is CPU-bound in Python. Prediction: it saturates before ClickHouse does,
-somewhere around 2–4x the design point.
+**2. Consumer throughput.** ~~A single consumer process doing canonicalisation
+and hashing is CPU-bound in Python. Prediction: it saturates before ClickHouse
+does, somewhere around 2–4x the design point.~~
+
+**Refuted by measurement (2026-08-12).** Single-core, on the target machine
+(M3 Pro):
+
+| Per-event step | Measured | Headroom over 8,333 ev/s |
+|---|---|---|
+| Canonicalise + BLAKE2b hash of the identity | 902,000 ev/s | 108x |
+| `json.dumps` | 267,000 ev/s | 32x |
+| `json.loads` | 283,000 ev/s | 34x |
+| Wire volume at 451 bytes/event | 3.8 MB/s | trivial |
+
+The prediction was wrong by roughly two orders of magnitude, and wrong about the
+*shape*: serialisation costs ~32x more than the hashing the prediction focused
+on, and even that leaves 32x headroom. Per-event application work is not the
+constraint at this design point.
+
+The revised expectation: the local ceiling is **CPU contention between
+containers** (Docker is allocated 4 CPUs on the target machine, shared across
+ClickHouse, producer, consumer, API, cache and the load generator) and the
+ClickHouse insert path — not per-event logic. This is recorded rather than
+re-predicted with confidence, since the first prediction was this far off.
 
 *Response:* add consumer instances. This is the horizontal step the demo shows
 live — partitions redistribute, lag drains visibly. It works **only because**

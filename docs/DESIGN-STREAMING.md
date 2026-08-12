@@ -94,6 +94,43 @@ measured 95-second reversal behaviour is reproduced (ADR-0007).
 Partition key: `hash(uid)`. Chosen so all activity for one Uid lands in one
 partition, which keeps per-Uid ordering meaningful without a global order.
 
+### How the producer randomises
+
+"Randomized values" is a requirement with a trap in it: values drawn from uniform
+distributions produce metrics that are structurally meaningless. Uniform stakes
+give a Gini near 0, uniform market choice erases the concentration the dashboard
+exists to show, and no anomaly detector fires because there are no anomalies to
+find. The generator must reproduce the *shape* of the measured data, not just its
+column types.
+
+Distributions are taken from the real export rather than invented:
+
+| Field | Distribution | Anchored on |
+|---|---|---|
+| Stake | Log-normal, per currency | Measured Gini 0.819 (EUR) and 0.914 (PEN) on turnover per Uid |
+| Uid | Zipf over a growing pool | Measured 10,405 Uids; betslip-count Gini 0.644 |
+| Market | Empirical frequencies | 119 markets, measured shares |
+| Competition / fixture | Empirical, weighted by fixture volume | 56 competitions, 453 fixtures |
+| Currency | EUR 88% / PEN 12% / USD <1% | Measured betslip counts |
+| Bet type | SIMPLE / COMBINED at measured ratio | Measured leg-to-betslip inflation 1.087x (EUR) |
+| Price | Log-normal, market-dependent | Measured price ranges per market |
+| Legs per betslip | 1 for SIMPLE; measured distribution for COMBINED | Betslip identity, ADR-0003 |
+
+Two behaviours are injected deliberately because they exercise decisions:
+
+- **Settlement reversals.** A configurable share of settled betslips emit a later
+  `reversal` with a higher `emitted_at`, reproducing what was measured across the
+  two exports (14 of 42 unambiguous shared rows, inside 95 seconds). Without
+  these the merge path is never exercised and ADR-0007 is untested.
+- **Duplicate delivery.** A configurable share of events are emitted twice,
+  reproducing the 36,832 and 17,253 exact duplicates already present in the
+  exports. This is what proves idempotency rather than assuming it.
+
+The rate dial is independent of all of the above: it controls emission rate only,
+so a rate change never changes the shape of the data being generated. That
+separation is what makes a rate change interpretable — if a metric moves when the
+rate moves, it is the system responding, not the data changing underneath.
+
 ### log → consumer
 
 At-least-once. The consumer must assume redelivery and out-of-order arrival.
@@ -186,6 +223,63 @@ component → add consumers → lag drains on screen.
 series, refresh percentiles, resulting artifact hashes) so results are
 reproducible and quotable without re-running the demo. The dashboard is the
 demonstration; the JSON is the evidence.
+
+### The resource budget, measured
+
+Measured on the target machine (M3 Pro, 11 cores, 19.3 GB), which is what the
+demo runs on. **Docker is allocated 4 CPUs and 8.3 GB**, and that allocation — not
+the host — is the real constraint, because ClickHouse, producer, consumer, API,
+Varnish and the load generator all share it.
+
+Per-event application cost, single core:
+
+| Step | Measured | Headroom over 8,333 ev/s (500k/min) |
+|---|---|---|
+| Canonicalise + BLAKE2b hash | 902,000 ev/s | 108x |
+| `json.dumps` | 267,000 ev/s | 32x |
+| `json.loads` | 283,000 ev/s | 34x |
+| Wire volume (451 bytes/event) | 3.8 MB/s | trivial |
+
+The consequence is worth stating plainly: **the brief's ceiling of 500k/min is
+comfortably reachable on this machine.** Per-event work is 32–108x faster than
+required, so the demo does not need excuses. It also refutes ADR-0010's original
+prediction that consumer CPU would saturate first — corrected there.
+
+What is expected to bind instead: CPU contention between containers within the
+4-CPU allocation, and the ClickHouse insert path. Recorded as expectation, not
+prediction, since the first prediction was two orders of magnitude off.
+
+### The scaling demo
+
+The point is not to show the system working at the requested rate — that is
+table stakes and, per the budget above, unremarkable. The point is to **find the
+ceiling on this machine, name the resource that produces it, and remove it
+live.**
+
+| Step | Rate | What the operations panel shows | What is said |
+|---|---|---|---|
+| 1. Baseline | 70k/min | Lag flat near zero; refresh well inside its tick | "This is the low end of the brief" |
+| 2. Requested ceiling | 500k/min | Lag still flat; refresh duration up but inside cadence | "This is the top of what was asked for, with headroom" |
+| 3. Past the brief | 1M/min, then higher | Lag begins to grow; refresh p99 climbs | "Now it is degrading — and here is precisely where" |
+| 4. Diagnose | held | Panel identifies the saturated component | Point at the number, not at a guess |
+| 5. Scale out | held | Add consumer replicas; lag drains on screen | "This works only because ingestion is idempotent — ADR-0007" |
+| 6. Name the wall | — | — | "Vertical to here, horizontal from here, and this is the state that stops replication" (ADR-0010) |
+
+Steps 3–5 are the exercise's actual question. Step 5 is only safe because
+re-delivery is idempotent and order-independent; without ADR-0007 adding a
+consumer mid-flight would corrupt data rather than fix throughput.
+
+### Reader load
+
+Separately from ingest, 100 steady concurrent readers are simulated against the
+front end with **k6**: 100 virtual users, constant arrival, declared thresholds
+as pass/fail criteria (p95 latency, zero errors, cache hit rate), and JSON
+output kept as evidence.
+
+The number that answers the brief is **backend request count**: with request
+coalescing (ADR-0011), 100 concurrent readers should produce roughly one backend
+fetch per TTL period rather than 100 per period. That ratio is the measurement,
+and it is reported alongside hit rate and p95.
 
 ### The measurement that validates correctness
 
