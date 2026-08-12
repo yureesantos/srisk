@@ -126,13 +126,39 @@ def read_export(path: Path) -> pd.DataFrame:
     Without `format=`, pandas keeps the dates as text and sorts them
     alphabetically, producing bogus ranges (01/06 -> 31/05).
     See docs/DATA-FINDINGS.md section 4.
+
+    Parsing .xlsx costs ~10s per file because openpyxl walks the sheet XML cell
+    by cell, so the parsed frame is cached beside the export. The source file's
+    size and mtime are part of the *cache filename*, so touching or replacing an
+    export simply misses the cache rather than reading a stale one. The cache
+    holds the frame exactly as parsed — every normalisation still runs on every
+    load, so this can never mask a change in the pipeline's own logic.
     """
+    stamp = path.stat()
+    cache = path.with_suffix(f".{stamp.st_size}-{int(stamp.st_mtime)}.cache.pkl")
+
+    if cache.exists():
+        try:
+            return pd.read_pickle(cache)
+        except Exception:
+            # A corrupt or unreadable cache is never fatal: fall through and
+            # reparse the authoritative .xlsx.
+            pass
+
     df = pd.read_excel(
         path, sheet_name=SHEET, header=HEADER_ROW, usecols=USECOLS, dtype={"Uid": str}
     )
     for col in DATE_COLS:
         df[col] = pd.to_datetime(df[col], format=DATE_FMT, errors="coerce")
     df["source_file"] = path.name
+
+    try:
+        for stale in path.parent.glob(f"{path.stem}.*.cache.pkl"):
+            stale.unlink()
+        df.to_pickle(cache)
+    except Exception:
+        # Caching is an optimisation, never a requirement.
+        pass
     return df
 
 

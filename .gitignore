@@ -30,3 +30,6 @@ dist/
 
 # Raw data exports are large and may be confidential — keep them out of git.
 data/raw/
+
+# Parsed-export cache (derived from data/raw/*.xlsx, rebuilt on demand)
+*.cache.pkl
