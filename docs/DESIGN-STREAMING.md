@@ -249,6 +249,46 @@ What is expected to bind instead: CPU contention between containers within the
 4-CPU allocation, and the ClickHouse insert path. Recorded as expectation, not
 prediction, since the first prediction was two orders of magnitude off.
 
+### Target volume: 20M rows, not a reduced sample
+
+The question this exercise answers, asked directly in the call, is *"what would
+you do with 20M betslips?"* — prompted by the batch pipeline taking 54 seconds
+over an Excel export of 113k legs.
+
+That target is not a separate scenario requiring special provision: **the
+requested rate produces it.** 500k/min sustained for 40 minutes is 20M rows. The
+demo therefore runs to 20M rather than validating on a reduced sample, because a
+demonstration at 100k rows leaves the original objection standing.
+
+Storage is not a constraint. With dimensions stored as `LowCardinality` — 56
+competitions, 119 markets, 453 fixtures, all measured — 20M rows are expected to
+occupy well under 1 GB, against Docker's 8.3 GB allocation. The same rows as raw
+JSON would be ~9 GB, and in Excel they would not exist at all: the format caps at
+roughly 1M rows per sheet, so the current input format cannot represent the target
+volume by two orders of magnitude.
+
+**The contrast this produces** is the exercise's real answer:
+
+| | Batch (Excel + pandas) | Streaming (ClickHouse) |
+|---|---|---|
+| Source | 12 MB xlsx | continuous stream |
+| Volume | 113k legs | 20M+ |
+| Reading input | 21 s (openpyxl, cell by cell) | not a step — already stored |
+| Computing every metric | 8.4 s (41 s before optimisation) | target: sub-second |
+| Updating | rerun everything | continuous tick |
+| Downtime to update | the entire pipeline | none |
+
+The batch figures are measured. **The ClickHouse column is a target, not a
+measurement, until step 1 of the build order produces it** — and if it comes back
+slower than expected, that number is reported as measured rather than as hoped.
+
+The sharper form of the argument: 54 seconds does not scale to 20M, it explodes.
+Both dominant costs were linear in row count with a large per-row constant —
+Python-level `.apply()` over groups, and XML parsing per cell. The honest claim is
+not "the old pipeline was slow", it is that **its input format cannot hold the
+target volume, and its execution model degrades linearly with a constant that
+makes 20M impractical.**
+
 ### The scaling demo
 
 The point is not to show the system working at the requested rate — that is
@@ -317,7 +357,11 @@ betflow/
 Each step is a PR, and each is verifiable on its own.
 
 1. **Schema + compose** — ClickHouse up, DDL applied, batch export loadable into
-   it. Verifiable: row counts match the batch pipeline's.
+   it. Verifiable: row counts match the batch pipeline's. Then **synthesise 20M
+   rows directly into the table** and time the seven breakdowns over them — this
+   is the number the whole exercise turns on, and it is worth having before any
+   producer or consumer exists, because a bad result here invalidates the design
+   while it is still cheap to change.
 2. **Producer** — rate dial and reversal injection. Verifiable: measured output
    rate matches the dial; reversals appear at the configured share.
 3. **Consumer** — canonicalisation and insert. Verifiable: replaying the same
