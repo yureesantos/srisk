@@ -70,9 +70,25 @@ property that made the batch product defensible.
 
 100 concurrent readers want cached responses; 8,333 events/s suggests they want
 fresh ones. This tension is largely false, and naming why is the load-bearing
-insight: **all 100 readers are looking at the same numbers.** The correct design
-computes each artifact once per tick and serves every reader from that result.
-The database sees one analytical sweep per tick, not one per reader.
+insight — but it rests on a property of *this* product rather than on an
+assumption about readers.
+
+The brief asks for "100 steady concurrent requests" without stating whether they
+are alike. In the current dashboard they are, and for a structural reason: the
+artifact is served whole and every selection happens client-side. The currency
+control is the only per-reader state, and it is `useState` in the browser
+choosing between `EUR`, `PEN` and `USD` values that the payload already carries.
+Two readers looking at different currencies still issued **byte-identical
+requests**.
+
+So the accurate statement is not "all readers want the same numbers" — it is
+**one request is indistinguishable from another at the cache, because
+personalisation happens after delivery**. The correct design therefore computes
+each artifact once per tick and serves every reader from that result; the
+database sees one analytical sweep per tick, not one per reader.
+
+This is a design constraint being deliberately preserved, not a fact about user
+behaviour, and it has a price: it holds only while filtering stays client-side.
 
 What remains of the tension is real but small, and it resolves against
 freshness: since settlements reverse inside 95 seconds, a GGR figure refreshed
@@ -159,3 +175,10 @@ Gini.
   "reproducible" to "audited".
 - A hash per tick is not comparable across ticks. Readers accustomed to a stable
   hash identifying "the" artifact must adjust to a hash identifying *a moment*.
+- **Serving one artifact to every reader constrains the product.** It holds only
+  while personalisation stays client-side, as the currency control does today.
+  A server-side filter — by region, by window, by competition — fragments the
+  cache into one entry per parameter combination, and the "compute once per tick"
+  property degrades toward one sweep per distinct query. That is a product
+  decision with an architectural cost, and it should be taken knowingly rather
+  than arrived at by adding a dropdown.
