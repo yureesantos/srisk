@@ -4,9 +4,16 @@ Date: 2026-08-12
 
 ## Status
 
-Accepted. Implements the ingestion contract of ADR-0007, which fixed the
-semantics (identity + version, idempotent, order-independent) and deliberately
-left the mechanism open.
+Accepted, **with the read-path mechanism superseded by
+[ADR-0012](0012-final-not-argmax-measured.md)**. The store, engine and schema
+below stand. The instruction to collapse with `argMax(col, version)` rather than
+`FINAL` is **wrong** and was merged unmeasured: `argMax` exceeds memory at 20M
+identities, while `FINAL` completes in 0.29–0.82s. The storage and latency
+figures in this record are estimates that ADR-0012 replaces with measurements.
+
+Implements the ingestion contract of ADR-0007, which fixed the semantics
+(identity + version, idempotent, order-independent) and deliberately left the
+mechanism open.
 
 ## Context
 
@@ -126,9 +133,14 @@ is absorbed; a settlement reversal supersedes because its version is higher;
 out-of-order arrival is irrelevant because the winner is chosen by version, not
 by arrival.
 
-**Reads collapse explicitly with `argMax(col, version) GROUP BY row_key`, not
+~~**Reads collapse explicitly with `argMax(col, version) GROUP BY row_key`, not
 with `FINAL`.** `FINAL` forces the merge at query time and is the wrong default
-under a 100-reader refresh loop.
+under a 100-reader refresh loop.~~
+
+**Superseded by ADR-0012.** Measured: `argMax` per `row_key` builds a hash table
+over 20M identities and dies with `MEMORY_LIMIT_EXCEEDED` after 52s, while
+`FINAL` streams a merge over already-sorted parts in 0.29–0.82s. The claim that
+`FINAL` "forces the merge at query time" misread its cost model.
 
 **Aggregation over mutable columns must never be pre-computed on insert.** A
 `SummingMergeTree` materialized view over this table would be *wrong*: MVs fire
@@ -168,10 +180,11 @@ returns the sorted per-Uid sums, `gini_lorenz()` finishes the job.
 **Negative**
 
 - **Deduplication is eventual, and this is the real cost.** Between insert and
-  background merge, both versions of a row coexist. Every read must collapse with
-  `argMax`; a query that forgets to is silently wrong, and wrong in the direction
-  of double-counting revenue. This is a correctness property enforced by
-  discipline and tests, not by the engine.
+  background merge, both versions of a row coexist. Every read must collapse
+  (with `FINAL` — ADR-0012); a query that forgets to is silently wrong, and wrong
+  in the direction of double-counting revenue. Measured at 22M rows over 20M
+  identities: a 22% overstatement of GGR. This is a correctness property enforced
+  by discipline and tests, not by the engine.
 - **This is money data with a measured ~33% retroactive mutation rate, and
   ClickHouse is the weakest of the three candidates at mutation.** Correctness
   under update is eventual-with-read-time-repair, not transactional. The pick
