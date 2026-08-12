@@ -72,6 +72,35 @@ the product and design decisions.
 
 ---
 
+## Streaming — the same analysis under continuous ingestion
+
+Betflow computes everything once over a frozen export. This is the design for
+running the same analysis when the data never stops arriving: 70k–500k betslips
+per minute, a target of 20M+ rows, and no downtime while it happens.
+
+**Design only at this stage** — the records exist so that implementation is
+execution rather than invention.
+
+| Document | What it settles |
+|---|---|
+| [DESIGN-STREAMING.md](docs/DESIGN-STREAMING.md) | Topology, the contract at every seam, measurement plan, build order |
+| [ADR-0007](docs/adr/0007-betslip-facts-are-mutable.md) | Betslip facts are mutable, so ingestion resolves by identity + version |
+| [ADR-0008](docs/adr/0008-clickhouse-as-the-analytical-store.md) | ClickHouse as the analytical store, and why not Postgres or Mongo |
+| [ADR-0009](docs/adr/0009-freshness-is-declared-per-layer.md) | Freshness declared per layer; the artifact hash becomes hash + watermark |
+| [ADR-0010](docs/adr/0010-scaling-path-and-the-state-that-blocks-it.md) | What breaks first, and the state that blocks replication |
+| [ADR-0011](docs/adr/0011-http-cache-in-front-of-the-artifact-api.md) | HTTP cache in front of the API, invalidated by event |
+| [Ingestion flow](docs/diagrams/ingestion-flow.md) · [Scaling](docs/diagrams/scaling.md) | Diagrams (render on GitHub) |
+
+The design rests on a measured fact rather than an assumption. The two exports in
+`data/raw/` were generated **95 seconds apart**; across the 42 shared rows whose
+identity is unambiguous, `TURNOVER` differs on **0** while `GGR` differs on
+**14** — settlements being reversed inside that window. Turnover is immutable and
+safely incremental; GGR is retroactively mutable and cannot be summed
+incrementally without correction. That split decides the write path, the
+database, the cache policy, and which metrics can be realtime at all.
+
+---
+
 ## Reconciliation — canonical model from two feeds
 
 Two providers describe the same match with completely different schemas —
@@ -117,9 +146,11 @@ betflow/            betting-flow analytics
   outputs/          generated analysis artifacts
 reconciliation/     two-feed canonical reconciliation (Python)
 docs/
-  DATA-FINDINGS.md  measured facts about the source data
-  AI-PROCESS.md     how this was built, and the prompts behind it
-  adr/              architecture decision records
+  DATA-FINDINGS.md      measured facts about the source data
+  DESIGN-STREAMING.md   the continuous-ingestion design
+  AI-PROCESS.md         how this was built, and the prompts behind it
+  adr/                  architecture decision records
+  diagrams/             data flow and scaling topology (Mermaid)
 PRODUCT.md          who the cockpit is for and what it must do
 DESIGN.md           the visual system and its constraints
 CONTEXT.md          the domain glossary (ubiquitous language)

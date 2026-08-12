@@ -1,9 +1,9 @@
 {
  "artifact": "flow",
  "schema_version": 1,
- "generated_at": "2026-07-24T02:19:46+00:00",
+ "generated_at": "2026-08-12T17:00:51+00:00",
  "dataset_fingerprint": "sha256:37d5b460d1cc867e",
- "payload_hash": "sha256:f0ec9b80a904e858",
+ "payload_hash": "sha256:7cdd2a5c9f0e4fdf",
  "environment": {
   "python": "3.10.0",
   "pandas": "2.1.4",
@@ -1566,7 +1566,7 @@
     "Resolved 44,229 of 44,237 player-centric legs (100.0%) into 1,026 names.",
     "Ranked by legs; totals cover all 1,026 values.",
     "Turnover shown at leg grain: valid for comparison within this breakdown only. A combined betslip repeats its stake on every leg, so the leg-grain total runs 1.07x above the true betslip-grain figure.",
-    "Names are not entity-resolved: 'Mbappe' and 'Kylian Mbappe' would occupy separate rows. Cross-feed identity is Task 2's problem."
+    "Names are not entity-resolved: 'Mbappe' and 'Kylian Mbappe' would occupy separate rows. Cross-feed identity is the reconciliation service's problem."
    ],
    "truncation": null
   }

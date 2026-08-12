@@ -765,9 +765,14 @@ def _detect_repeat_backing(legs: pd.DataFrame) -> Table:
 
     flagged = summary[summary["betslips"] >= REPEAT_BACKING_MIN_BETSLIPS].copy()
     if len(flagged):
+        # Stake counts once per betslip, never once per leg: a combined bet
+        # repeats its stake on every leg. Deduplicating (key + betslip) before
+        # summing is the vectorised form of "first stake per betslip, then sum",
+        # and avoids a per-group Python call on ~89k groups.
         stakes = (
-            legs.groupby(key, sort=False)
-            .apply(lambda g: g.groupby("betslip_id")["TURNOVER"].first().sum())
+            legs.drop_duplicates(subset=key + ["betslip_id"])
+            .groupby(key, sort=False)["TURNOVER"]
+            .sum()
             .rename("stake")
             .reset_index()
         )
