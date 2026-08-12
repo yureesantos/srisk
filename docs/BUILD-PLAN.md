@@ -60,26 +60,25 @@ no new dependency is required.
 
 ---
 
-## Open decision: a log between producer and consumer
+## Settled: a log between producer and consumer
 
-Not settled, and deliberately so — this is the one decision the plan flags for
-a human rather than makes. The rate does not require a log: 8,333 ev/s is 32x
-inside the measured `json.dumps` budget on one core. What a log buys is the
-**demo**: consumer lag as a first-class observable (consumer-group offsets) and
-live consumer rescale (partition rebalance) — which is literally steps 3–5 of
-the scaling demo in DESIGN-STREAMING.md.
+**Decided — Kafka, with AKHQ as the operations UI ([ADR-0013](adr/0013-a-log-between-producer-and-consumer.md)).**
 
-| | With Redpanda | Without (direct socket/pipe) |
-|---|---|---|
-| Consumer lag | Read from the broker, trustworthy | Synthesised by the consumer from its own queue depth — self-reported |
-| Scale consumers live | `docker compose up -d --scale consumer=3`, rebalance is automatic | Restart the consumer with more workers; the "live" in "scale live" weakens |
-| Replay-to-watermark (ADR-0009) | Retention gives it directly | Requires the producer to persist its output stream anyway |
-| Cost | One more container from the 4-CPU / 8.3 GB budget (~0.5 CPU, ~1 GB); one more thing that can be misconfigured | Bespoke lag accounting and a weaker demo |
+The rate does not require a log: 8,333 ev/s is 32x inside the measured
+`json.dumps` budget on one core. The log is there for three properties this
+design already committed to elsewhere — trustworthy consumer lag (ADR-0010),
+adding consumers without a restart (steps 3–5 of the demo), and
+replay-to-watermark (ADR-0009, which needs the stream to survive being consumed).
 
-**Decide before `feat/consumer` starts** — the consumer's input interface is
-the first thing it touches. `feat/producer` is not blocked either way: the
-producer writes to a sink interface (`stdout` NDJSON, file, or Kafka-protocol),
-and every producer test below runs against the file sink.
+RabbitMQ was rejected on the model rather than on throughput: a consumed message
+is deleted, so there is nothing to replay to. Redpanda is protocol-identical and
+lighter, and was rejected only because Kafka is the name used in the client
+conversation; the local resource argument that favoured it was resolved by
+stopping an unrelated container stack.
+
+**The producer stays sink-abstracted regardless** (`stdout` NDJSON, file, or
+Kafka), and every producer test below runs against the file sink — so branch 1
+is testable without the broker running.
 
 ---
 

@@ -16,7 +16,7 @@ data shape (DESIGN-STREAMING: a rate change must be interpretable).
 streaming/producer/__main__.py     # CLI: --rate, --duration|--count, --seed,
                                    #      --reversal-share, --duplicate-share, --sink
 streaming/producer/generate.py     # distributions, ported from synthesise.sql
-streaming/producer/sinks.py        # stdout/file now; kafka if the log decision lands
+streaming/producer/sinks.py        # stdout/file for testing; kafka per ADR-0013
 streaming/producer/check_shape.py  # calibration assertions (test tool, also CI-able)
 ```
 

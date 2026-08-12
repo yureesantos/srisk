@@ -27,11 +27,11 @@ python -m streaming.load.harness \
 # varnishstat snapshot if branch 4 landed.
 ```
 
-Then the live part, which depends on the log decision: with Redpanda,
-`docker compose up -d --scale consumer=3` mid-hold and the record shows lag
-draining; without it, the consumer restarts with more workers and the record
-shows the same drain with a gap — stated plainly in the record, not smoothed
-over. The step past the brief's ceiling is the point: find where it degrades
+Then the live part, settled by ADR-0013: `docker compose up -d --scale
+consumer=3` mid-hold, Kafka rebalances the partitions, and the record shows lag
+draining without a restart. Lag is read from the broker's consumer-group
+offsets rather than self-reported by the consumer, which is the reason the log
+is there at all. The step past the brief's ceiling is the point: find where it degrades
 on this machine, name the saturated component from the panel (expected: CPU
 contention inside the 4-CPU allocation or the ClickHouse insert path — both
 are expectations, not measurements, and the first prediction in this project
