@@ -74,14 +74,15 @@ no statement of what it replaces. We would have to reconstruct the delta by
 diffing against the current state, which means we need that state keyed and
 addressable anyway, which is the third option with extra steps.
 
-**Merge on identity (upsert), last-writer-wins per fact.** Every arriving row is
-matched against the stored fact and replaces it when it is newer. Requires
+**Merge on identity, newest version per fact wins.** Every arriving row carries a
+version; the row with the highest version for an identity is the truth. Requires
 addressable identity and a version to order by; gives idempotency for free,
-since re-delivering the same row is a no-op rather than a double-count.
+since re-delivering the same row resolves to the same state rather than
+double-counting.
 
 ## Decision
 
-**Ingestion is a merge on betslip-leg identity, not an append.**
+**Ingestion resolves by identity and version, never by append-and-sum.**
 
 The identity is ADR-0003's key extended to leg grain — the coarsest key that is
 unique per priced selection:
@@ -89,9 +90,26 @@ unique per priced selection:
     (Uid, betslip timestamp, BetType, MatchId, Market, Player, Option, Price)
 
 Ordering is by **source snapshot time**, taken from the producer's emission
-timestamp (in the exports, the filename's `HHMMSS`). Last writer wins per row,
+timestamp (in the exports, the filename's `HHMMSS`). The highest version wins,
 compared by version and never by arrival order: an out-of-order redelivery of an
 older snapshot must not overwrite a newer fact.
+
+This record fixes the *contract*, not the mechanism. Whether supersedence happens
+as a transactional upsert, as a compacting merge, or as a read-time collapse is a
+storage-engine decision, made in ADR-0008. What every implementation must
+satisfy: re-delivery is idempotent, a newer version supersedes an older one, and
+arrival order is irrelevant.
+
+**Stated assumption on the key.** The identity omits `TURNOVER`, so two genuinely
+distinct bets by one customer, on the same selection, at the same price, within
+the same timestamp second, collapse into one. ADR-0003 established such
+same-second collisions are real (they are why `SIMPLE` betslips split by
+`BetType`), and this key inherits that limitation at leg grain. The measured
+36,832 and 17,253 exact-duplicate rows indicate the source redelivers rather than
+co-places, which is why supersedence is the right default — but where a
+collapsed pair carried genuinely different stakes, that stake is lost rather than
+flagged. Detecting it requires a source-side betslip id, which the export does
+not ship.
 
 **Facts are classified by mutability, and the classification is enforced in the
 schema rather than left to convention:**
@@ -133,11 +151,12 @@ equivalent of the invariant checks the batch pipeline already runs.
 
 **Negative**
 
-- A merge costs more than an append: it needs an index lookup per row and takes
-  a row lock. At the 8,333 events/s target this is affordable, and it is measured
-  rather than assumed — but it is the first thing to break at 10x, and the exit
-  is stated in the scaling record rather than pretended away.
-- Last-writer-wins silently loses a genuine concurrent conflict. With a single
+- Resolving by identity costs more than blind appending, and *where* it costs
+  depends on the engine: a transactional upsert pays an index lookup and a row
+  lock on write, while a compacting store pays a collapse on read until its
+  background merge catches up. ADR-0008 picks which cost to take and measures it;
+  neither is free, and the scaling record states what breaks first.
+- Version supersedence silently loses a genuine concurrent conflict. With a single
   consolidating source this is not reachable; with several partners restating the
   same betslip it would be, and the version field is what a future record would
   build a real resolution on.
