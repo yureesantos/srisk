@@ -40,5 +40,49 @@ services:
       timeout: 2s
       retries: 20
 
+  # Artifact API. Stdlib only, computes nothing (ADR-0011) — which is why it can
+  # be replicated freely and why the cache in front of it is what absorbs reader
+  # load rather than the service itself.
+  api:
+    image: python:3.11-alpine
+    container_name: srisk-api
+    command: python /app/server.py --artifacts /artifacts --port 8088
+    volumes:
+      - ./api/server.py:/app/server.py:ro
+      - ./out/artifacts:/artifacts:ro
+    expose:
+      - "8088"
+    ports:
+      - "18088:8088"   # direct access, for comparing against the cached path
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
+  varnish:
+    image: varnish:7.5
+    container_name: srisk-varnish
+    depends_on:
+      - api
+    volumes:
+      - ./api/default.vcl:/etc/varnish/default.vcl:ro
+    ports:
+      - "18081:80"
+    environment:
+      # Small on purpose: the working set is a handful of JSON files totalling
+      # ~400 KB, so a large cache would prove nothing about the policy.
+      VARNISH_SIZE: 64M
+    # No tmpfs over /var/lib/varnish: the image already ships it owned by the
+    # varnish user (uid 1000), and mounting a tmpfs there masks it with a
+    # root-owned directory, which makes varnishd exit with "Permission denied".
+    # The default malloc storage is in memory anyway, so the tmpfs bought
+    # nothing.
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
+
 volumes:
   clickhouse-data:
