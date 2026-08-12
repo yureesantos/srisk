@@ -26,18 +26,45 @@ Measured targets, from `data/raw/`:
 
 from __future__ import annotations
 
+import bisect
+import json
 import math
 import random
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
-# Cardinalities, measured from the export (see module docstring).
-N_COMPETITIONS = 56
+# Labels are drawn from the **real export's vocabulary at its measured
+# frequencies**, not synthesised as "Market 47".
+#
+# This is not cosmetic. The pipeline reads meaning out of these strings:
+# `normalise_market` collapses `{PLAYER}` and `{goalnr}` templates and names
+# `{COMPETITOR1}`/`{COMPETITOR2}` as bet builders (10.6% of legs), and player
+# resolution keys off market families like "goalscorer" and "to score"
+# (ADR-0004). Generic labels match none of those paths, so the analysis runs
+# against a book containing no player-centric markets at all — which surfaced as
+# a ZeroDivisionError in `_player_breakdown` on the first refresh run, dividing
+# by a count that was zero.
+_VOCAB = json.loads(Path(__file__).with_name("vocabulary.json").read_text())
+
 N_FIXTURES = 453
-N_MARKETS = 119
-N_PLAYERS = 2714
-N_SELECTIONS = 6014
-N_REGIONS = 31
+
+
+def _weighted(entries: list) -> tuple[list, list]:
+    """[[label, weight], ...] -> (labels, cumulative distribution)."""
+    labels = [e[0] for e in entries]
+    cumulative, running = [], 0.0
+    for _, weight in entries:
+        running += weight
+        cumulative.append(running)
+    return labels, cumulative
+
+
+MARKETS, MARKET_CDF = _weighted(_VOCAB["markets"])
+COMPETITIONS, COMPETITION_CDF = _weighted(_VOCAB["competitions"])
+REGIONS, REGION_CDF = _weighted(_VOCAB["regions"])
+PLAYERS, PLAYER_CDF = _weighted(_VOCAB["players"])
+SELECTIONS, SELECTION_CDF = _weighted(_VOCAB["selections"])
 
 # The Uid pool is derived from the event count, not fixed. The export carries
 # 113k legs over 10,405 Uids — **10.8 legs per Uid** — and that ratio, not the
@@ -157,6 +184,10 @@ class Generator:
                 return code
         return "USD"
 
+    def _pick(self, labels: list, cdf: list) -> str:
+        """Draw a label at its measured frequency."""
+        return labels[bisect.bisect_left(cdf, self._rng.random() * cdf[-1])]
+
     def leg(self, emitted_at: int) -> Leg:
         placed = BOOK_START + timedelta(seconds=self._rng.randrange(BOOK_SECONDS))
         event = placed + timedelta(
@@ -183,11 +214,11 @@ class Generator:
             bet_type="SIMPLE" if self._rng.randrange(100) < SIMPLE_SHARE_PCT else "COMBINED",
             match_id=match_id,
             fixture=f"Fixture {match_id - 30_000_000}",
-            competition=f"Competition {self._rng.randrange(N_COMPETITIONS)}",
-            market=f"Market {self._rng.randrange(N_MARKETS)}",
-            player=f"Player {self._rng.randrange(N_PLAYERS)}",
-            selection=f"Selection {self._rng.randrange(N_SELECTIONS)}",
-            region=f"Region {self._rng.randrange(N_REGIONS)}",
+            competition=self._pick(COMPETITIONS, COMPETITION_CDF),
+            market=self._pick(MARKETS, MARKET_CDF),
+            player=self._pick(PLAYERS, PLAYER_CDF),
+            selection=self._pick(SELECTIONS, SELECTION_CDF),
+            region=self._pick(REGIONS, REGION_CDF),
             currency=self._currency(),
             price=price,
             turnover=turnover,
