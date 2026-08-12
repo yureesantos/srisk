@@ -19,54 +19,65 @@ flowchart LR
     end
 
     subgraph CONSUME["Consumer"]
-        MERGE["Merge on leg identity<br/>ADR-0003 key + Price<br/>last-writer-wins by snapshot time"]
-        CLASS{"Fact class?"}
+        KEY["Canonicalise + hash<br/>ADR-0007 identity key<br/>stamp version = snapshot time"]
+        BATCH["Batch insert<br/>never update in place"]
     end
 
-    subgraph STORE["Storage"]
-        FACTS[("Betslip facts<br/>current state<br/>one row per leg identity")]
-        HIST[("Superseded values<br/>audit trail")]
-        ROLL[("Incremental rollups<br/>turnover by dimension")]
-        WIN[("Window snapshots<br/>Gini · sharp test · anomalies")]
+    subgraph STORE["ClickHouse"]
+        FACTS[("betslip_leg<br/>ReplacingMergeTree(version)<br/>ORDER BY row_key")]
+        MERGEBG["Background merge<br/>collapses to highest version<br/>eventual, not transactional"]
+    end
+
+    subgraph REFRESH["Refresh job — one sweep per tick"]
+        COLLAPSE["argMax(col, version)<br/>collapse at read time"]
+        AGG["Seven breakdowns<br/>GROUP BY dim, currency"]
+        STATS["sharp.py · gini_lorenz()<br/>Wilson · binomial · BH"]
+        ART["Artifact per layer<br/>+ freshness envelope"]
     end
 
     subgraph SERVE["Serving"]
-        API["Read API<br/>per-layer envelopes"]
         CACHE["Cache<br/>short TTL + stale-while-revalidate"]
         UI["Dashboard<br/>every number labelled<br/>with layer and latency"]
     end
 
     P1 -->|"~5 ms<br/>network"| LOG
-    LOG -->|"consumer lag<br/>the number to watch"| MERGE
-    MERGE --> CLASS
-    CLASS -->|"immutable<br/>write once"| FACTS
-    CLASS -->|"mutable<br/>overwrite + retain prior"| FACTS
-    FACTS -.->|"prior value"| HIST
-    FACTS -->|"~1 s<br/>associative fold"| ROLL
-    FACTS -->|"on window close<br/>or fixture kick-off"| WIN
-    ROLL -->|"speed layer"| API
-    WIN -->|"batch layer"| API
-    API --> CACHE
-    CACHE -->|"100 concurrent readers"| UI
+    LOG -->|"consumer lag<br/>the number to watch"| KEY
+    KEY --> BATCH
+    BATCH -->|"8,333 rows/s<br/>append only"| FACTS
+    FACTS <-.->|"asynchronous"| MERGEBG
+    FACTS -->|"per tick"| COLLAPSE
+    COLLAPSE -->|"turnover: immutable<br/>ggr: superseded"| AGG
+    COLLAPSE -->|"~700 (beats, trials)<br/>10,405 per-Uid sums"| STATS
+    AGG --> ART
+    STATS --> ART
+    ART --> CACHE
+    CACHE -->|"100 concurrent readers<br/>one computation, not 100"| UI
 
     classDef immutable fill:#0f3d2e,stroke:#2e9e6b,color:#e6f5ee
     classDef mutable fill:#4a2a12,stroke:#c97a2e,color:#fdf0e3
     classDef neutral fill:#1e2a38,stroke:#5a7ea8,color:#e8f0f8
-    class ROLL immutable
-    class WIN,HIST mutable
-    class LOG,MERGE,FACTS,API,CACHE,UI,P1,CLASS neutral
+    class AGG immutable
+    class MERGEBG,STATS mutable
+    class LOG,KEY,BATCH,FACTS,COLLAPSE,ART,CACHE,UI,P1 neutral
 ```
+
+The dashed edge is the one to read carefully: the background merge is
+**asynchronous**, so between an insert and its merge both versions of a row are
+present in the table. That is why the refresh job collapses with `argMax` rather
+than trusting the stored state, and why no `SummingMergeTree` view sits on this
+table — an insert-time view never observes the collapse and would double-count a
+superseded settlement (ADR-0008).
 
 ## What each hop guarantees
 
 | Hop | Guarantee | Failure it absorbs |
 |---|---|---|
 | Producer → log | At-least-once, ordered within a partition | Consumer restart; network retry |
-| Log → merge | Idempotent by leg identity (ADR-0007) | Duplicate delivery — already 36,832 exact dupes in one export |
-| Merge → facts | Immutable facts written once; mutable facts versioned | Retroactive settlement reversal (measured: 14 of 42 rows) |
-| Facts → rollups | Associative fold over turnover only | Nothing — replayable from facts |
-| Facts → window snapshots | Recomputed over a closed window | Late arrivals inside the window |
-| API → cache → UI | Every number carries its layer, grain and staleness | Reader mistaking a 24h Gini for a live one |
+| Log → consumer | Identity hashed once, version stamped from snapshot time | Out-of-order arrival — the winner is chosen by version, not by arrival |
+| Consumer → table | Append only; supersedence resolved by version (ADR-0007) | Duplicate delivery — already 36,832 exact dupes in one export |
+| Table → refresh | `argMax(col, version)` collapse at read time | The merge not having run yet — both versions present |
+| Refresh → artifact | Turnover summed directly; GGR only after collapse | Retroactive settlement reversal (measured: 14 of 42 rows) |
+| Artifact → cache → UI | Every number carries its layer, grain and staleness | Reader mistaking a windowed Gini for a live one |
 
 ## Why turnover and GGR take different paths
 
