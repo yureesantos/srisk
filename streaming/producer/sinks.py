@@ -69,25 +69,56 @@ class KafkaSink:
                 "linger.ms": 50,
                 "batch.size": 1 << 20,
                 "compression.type": "lz4",
+                # The default queue is 100,000 messages. At the brief's ceiling
+                # the producer hands over 8,333/s in 0.05s slices, and a broker
+                # pausing for even a second puts the queue within reach of full
+                # — at which point produce() raises BufferError. Raised, and the
+                # BufferError still handled below, because a queue limit is a
+                # backpressure signal rather than an error to configure away.
+                "queue.buffering.max.messages": 500_000,
             }
         )
 
     def write(self, events: list) -> None:
         for event in events:
-            self._producer.produce(
-                self._topic,
-                key=event.uid.encode(),
-                value=json.dumps(event.as_dict(), separators=(",", ":")).encode(),
-            )
+            # `uid` is the partition key: confluent-kafka hashes it (murmur2)
+            # to choose the partition, so every event for one customer lands in
+            # one partition and per-Uid order holds (ADR-0013). The
+            # sharp-behaviour and repeat-backing analyses both group by Uid and
+            # depend on it.
+            #
+            # The event is a dataclass, and `as_dict()` is where the wire shape
+            # is decided — reading `event.uid` directly would bypass whatever
+            # naming that mapping applies, so the payload is built first and the
+            # key taken from it.
+            payload = event.as_dict()
+            while True:
+                try:
+                    self._producer.produce(
+                        self._topic,
+                        key=str(payload["uid"]).encode(),
+                        value=json.dumps(payload, separators=(",", ":")).encode(),
+                    )
+                    break
+                except BufferError:
+                    # The local queue is full: the broker is not draining as
+                    # fast as this loop fills. Serve callbacks and retry rather
+                    # than dropping the event — silently losing events would
+                    # make every throughput figure here meaningless.
+                    self._producer.poll(0.1)
         # Serve delivery callbacks without blocking; poll(0) is the documented
         # way to keep the internal queue draining.
         self._producer.poll(0)
 
     def flush(self) -> None:
-        self._producer.flush()
+        # flush() returns the number of messages still undelivered. Ignoring it
+        # is how a run reports events it never actually sent.
+        remaining = self._producer.flush(30)
+        if remaining:
+            raise SystemExit(f"kafka: {remaining} messages undelivered after 30s flush")
 
     def close(self) -> None:
-        self._producer.flush()
+        self.flush()
 
 
 def build(spec: str, brokers: str, topic: str) -> Sink:
