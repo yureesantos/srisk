@@ -95,6 +95,53 @@ the raw results are committed under `streaming/results/`.
 | [ADR-0014](docs/adr/0014-aggregate-in-the-database.md) | Aggregate in the database; canonicalise at ingest |
 | [Ingestion flow](docs/diagrams/ingestion-flow.md) · [Scaling](docs/diagrams/scaling.md) | Diagrams (render on GitHub) |
 
+### The path a betslip takes
+
+```mermaid
+flowchart LR
+    P["Producer<br/><b>515,418/min</b><br/>shape calibrated<br/>against the export"]
+    K["Kafka<br/>6 partitions<br/>by hash(uid)"]
+    C["Consumer<br/>canonicalise · hash<br/>batch insert"]
+    D[("ClickHouse<br/>ReplacingMergeTree<br/><b>562 ms</b> to land")]
+    R["Refresh<br/>SQL aggregation<br/><b>0.59 s</b> class 1"]
+    A["Artifact<br/>+ watermark<br/>+ hash"]
+    V["Varnish<br/><b>99.8%</b> hit<br/>85 backend fetches"]
+    U["Dashboard<br/><b>1.74 ms</b><br/>polls every 5 s"]
+
+    P -->|"idempotent<br/>out of order"| K
+    K -->|"lag from<br/>the broker"| C
+    C -->|"append only<br/>never update"| D
+    D -->|"FINAL<br/>collapse"| R
+    R --> A --> V --> U
+
+    classDef fast fill:#0f3d2e,stroke:#2e9e6b,color:#e6f5ee
+    classDef store fill:#123a52,stroke:#3d8fc4,color:#e6f2fa
+    classDef neutral fill:#1e2a38,stroke:#5a7ea8,color:#e8f0f8
+    class P,K,C neutral
+    class D,R store
+    class A,V,U fast
+```
+
+**Emitted to on-screen: 5.0 s median** (4.1–6.3 s), measured end to end under
+sustained 500k/min. Of that, **0.56 s is transport and 4.44 s is waiting for the
+next refresh tick** — the cadence is 89% of the total, and it is a choice rather
+than a limit. ADR-0009 set it in seconds because settlements were measured
+reversing inside 95 seconds, so a GGR figure fresher than that reports noise as
+signal.
+
+Three numbers get confused with each other, and only the first is a wait:
+
+| | Measured | What it is |
+|---|---|---|
+| response latency | **1.74 ms** | what a reader waits for the page |
+| data age | **2.8 – 5.9 s** | how stale the figure on screen is |
+| recompute cost | 0.59 s (class 1) | background, and what volume actually moves |
+
+Volume moves the third, which moves the second, and leaves the first alone —
+because the dashboard reads a precomputed artifact rather than querying the
+database. That is the same seam Betflow already had; streaming changes what
+writes the artifact, not who reads it.
+
 ### Running the streaming pipeline
 
 ```bash
