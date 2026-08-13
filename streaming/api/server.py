@@ -109,11 +109,33 @@ class Handler(BaseHTTPRequestHandler):
             "served_at": time.time(),
         }
 
+    def do_OPTIONS(self) -> None:
+        """CORS preflight. The dashboard runs on Vite's port, the API on its own."""
+        self.send_response(204)
+        self._cors()
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.end_headers()
+
+    def _cors(self) -> None:
+        # Wide open deliberately: these artifacts are public aggregates with no
+        # per-user content and no credentials (ADR-0009 — personalisation
+        # happens client-side), and the alternative is a whitelist that breaks
+        # the moment someone runs the dashboard on a different port.
+        self.send_header("Access-Control-Allow-Origin", "*")
+        # Let the browser read the freshness headers, not just the body:
+        # without this, `X-Artifact-Age-Seconds` is invisible to fetch().
+        self.send_header(
+            "Access-Control-Expose-Headers",
+            "X-Artifact-Class, X-Artifact-Age-Seconds, X-Cache, Age",
+        )
+
     def _send(self, body: bytes, cache_control: str, status: int = 200, extra: dict | None = None) -> None:
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", cache_control)
+        self._cors()
         for key, value in (extra or {}).items():
             self.send_header(key, value)
         self.end_headers()

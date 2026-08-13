@@ -53,6 +53,12 @@ sub vcl_recv {
         return (pass);
     }
 
+    # CORS preflight goes straight to the backend: caching a 204 keyed only by
+    # URL would serve it in place of the real response.
+    if (req.method == "OPTIONS") {
+        return (pass);
+    }
+
     unset req.http.Cookie;
     return (hash);
 }

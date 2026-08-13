@@ -100,10 +100,21 @@ HOUSE_WIN_PER_MILLE = 556
 BOOK_START = datetime(2026, 6, 1, tzinfo=timezone.utc)
 BOOK_SECONDS = 1_987_200
 
-# Kick-off sits within +/- 24h of placement, so both pre-match and in-play legs
-# occur. `is_inplay` follows from the comparison, never from a separate draw.
-KICKOFF_WINDOW_SECONDS = 172_800
-KICKOFF_OFFSET_SECONDS = 86_400
+# Timing relative to kick-off, calibrated against the export rather than drawn
+# uniformly. Measured there: **95.2% pre-match**, with a median of 341 minutes
+# before kick-off and a long tail out to several days.
+#
+# A uniform +/- 24h window — the first attempt — produced a 50/50 split, and
+# that is not a cosmetic difference: the sharp test scores only pre-match legs
+# (an in-play leg has no valid pre-kick-off reference, ADR-0005), so half the
+# generated data was ineligible and the test had no population to work with.
+# The dashboard read "0 customers beat the book" because there was nothing to
+# measure, not because nobody beat it.
+PRE_MATCH_SHARE = 0.952
+# Log-normal minutes-before-kickoff: median ~341, tail to ~2 days.
+PRE_MATCH_MU, PRE_MATCH_SIGMA = 5.83, 1.6
+# In-play legs land within the match window.
+INPLAY_MAX_MINUTES = 120
 
 EVENT_PLACEMENT = "placement"
 EVENT_REVERSAL = "reversal"
@@ -190,9 +201,17 @@ class Generator:
 
     def leg(self, emitted_at: int) -> Leg:
         placed = BOOK_START + timedelta(seconds=self._rng.randrange(BOOK_SECONDS))
-        event = placed + timedelta(
-            seconds=self._rng.randrange(KICKOFF_WINDOW_SECONDS) - KICKOFF_OFFSET_SECONDS
-        )
+        if self._rng.random() < PRE_MATCH_SHARE:
+            # Placed before kick-off: the event is later by a log-normal gap.
+            minutes = min(
+                math.exp(PRE_MATCH_MU + PRE_MATCH_SIGMA * self._rng.gauss(0.0, 1.0)),
+                60 * 24 * 7,
+            )
+            event = placed + timedelta(minutes=minutes)
+        else:
+            event = placed - timedelta(
+                minutes=self._rng.uniform(0.5, INPLAY_MAX_MINUTES)
+            )
 
         price = round(self._lognormal(PRICE_MU, PRICE_SIGMA, PRICE_MIN, PRICE_MAX), 3)
         turnover = round(self._lognormal(STAKE_MU, STAKE_SIGMA, STAKE_MIN, STAKE_MAX), 2)

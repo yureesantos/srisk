@@ -36,6 +36,8 @@ import {
   ClipboardCheck,
 } from 'lucide-react'
 import { payload } from './lib/payload'
+import { useLive } from './lib/useLive'
+import { OpsPanel } from './components/OpsPanel'
 import { dateTime } from './lib/format'
 
 const NAV: NavItem[] = [
@@ -51,12 +53,20 @@ const NAV: NavItem[] = [
 ]
 
 export default function App() {
+  const live = useLive()
+
   return (
-    <TooltipProvider>
+    // `revision` bumps on every successful poll. Keying the tree on it remounts
+    // the sections against the swapped payload — blunt, but it is the one
+    // mechanism that guarantees all twenty-three modules reading `payload` at
+    // render time see the new object. In batch mode it stays 0 and nothing
+    // remounts.
+    <TooltipProvider key={live.revision}>
       <CurrencyProvider>
         <VerifyProvider>
           <Topbar />
           <Shell nav={NAV}>
+            <OpsPanel live={live} />
             <div className="space-y-3 pt-5">
               <AlertStrip />
               <AlertsPanel />

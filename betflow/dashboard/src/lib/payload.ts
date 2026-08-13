@@ -248,7 +248,26 @@ export interface Payload {
   }
 }
 
-export const payload = raw as unknown as Payload
+/* Mutable so the live layer can replace it in place.
+ *
+ * Twenty-three modules import `payload` directly. Threading a fetched value
+ * through all of them would mean touching every one; swapping the object the
+ * module exports means touching none, and the components keep reading a plain
+ * value rather than a promise. `useLive` bumps a React key after each swap, so
+ * the tree re-renders against the new object.
+ *
+ * The trade is that this is module-level mutable state, which is normally worth
+ * avoiding. It is contained: exactly one writer (`applyLivePayload`), and the
+ * shape is the same artifact contract either way. */
+export let payload = raw as unknown as Payload
+
+/** Replace the artifact the whole page reads. Called only by the live layer. */
+export function applyLivePayload(next: Payload): void {
+  payload = next
+}
+
+/** The build-time artifact, kept so the UI can say what it is showing. */
+export const bakedPayload = raw as unknown as Payload
 
 /** Mirrors `pipeline.resolve_ref`: string equality on every select pair. */
 export function resolveRef(ref: VerifyRef): {

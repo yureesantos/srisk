@@ -31,7 +31,14 @@ export function KeyFindings() {
   const pr = payload.prices.report
   const conc = payload.concentration
   const phases = payload.timing.phases.rows
-  const exposure = payload.anomalies.abnormal_exposure.rows[0] as Record<string, unknown>
+  // A detector can legitimately find nothing — abnormal exposure fires only
+  // when one selection holds a large share of a top-decile fixture, which a
+  // book may simply not contain. Reading rows[0] unguarded turned an empty
+  // detector into a blank page.
+  const exposure = (payload.anomalies.abnormal_exposure.rows[0] ?? null) as Record<
+    string,
+    unknown
+  > | null
   const { currency } = useCurrency()
 
   const preShare = (() => {
@@ -153,7 +160,11 @@ export function KeyFindings() {
       section: 'prices',
       cta: 'See price value & movement',
     },
-    {
+    // Spread-in rather than listed: when the detector found nothing there is no
+    // finding to report, and a card reading "0% of a fixture's turnover" would
+    // be worse than its absence.
+    ...(exposure
+      ? [{
       tag: 'Anomaly',
       headline: (
         <>
@@ -178,7 +189,8 @@ export function KeyFindings() {
         'Whether the concentrated selection is one actor or many; whether same-second clusters are terminal or automated placement.',
       section: 'anomalies',
       cta: 'Open the detectors',
-    },
+    }]
+      : []),
   ]
 
   return (
