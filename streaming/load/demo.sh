@@ -27,8 +27,15 @@ GROUP="demo-$(date +%s)"
 TOPIC="${TOPIC:-betslips}"
 BROKERS="${BROKERS:-localhost:19092}"
 RESULTS="streaming/results"
-ACT="${2:-all}"
-[ "${1:-}" = "--act" ] && ACT="${2:-all}"
+ACT="all"
+CLEAN=0
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --act) ACT="${2:-all}"; shift 2 ;;
+    --clean) CLEAN=1; shift ;;
+    *) shift ;;
+  esac
+done
 mkdir -p "$RESULTS"
 
 bold() { printf "\n\033[1m%s\033[0m\n" "$1"; }
@@ -69,19 +76,40 @@ act_two_three() {
   echo "~31,600 ev/s and nothing below that produces a rising lag line."
   echo
 
+  # Consumers from an interrupted earlier run stay in the group until their
+  # session times out, and the member count then reads high while the group
+  # rebalances them out. Clearing them makes the count mean what it says.
+  pkill -f "streaming.consumer --source kafka" 2>/dev/null
+  sleep 1
+
   python -m streaming.producer --rate 3600000 --duration 90 \
       --reversal-share 0.02 --duplicate-share 0.01 \
       --sink kafka --brokers "$BROKERS" --topic "$TOPIC" \
       > "$RESULTS/_demo_producer.log" 2>&1 &
   local producer=$!
 
-  # A fresh group starts at offset 0 and inherits every event still retained in
-  # the topic — measured at ~9M from earlier runs — so the first lag sample
-  # reads in the millions and the rise this act exists to show is already over.
-  # Seeking the group to the end first makes the demo measure what it produces.
-  docker exec srisk-kafka /opt/kafka/bin/kafka-consumer-groups.sh \
-      --bootstrap-server localhost:9092 --group "$GROUP" --topic "$TOPIC" \
-      --reset-offsets --to-latest --execute >/dev/null 2>&1
+  # A fresh consumer group starts at offset 0 and inherits every event still
+  # retained in the topic — measured at ~9M from earlier runs — so the first lag
+  # sample reads in the millions and the rise this act exists to show is already
+  # over before it begins. Two ways out, and the default is the cheap one.
+  if [ "$CLEAN" -eq 1 ]; then
+    echo "  clearing the topic..."
+    docker exec srisk-kafka /opt/kafka/bin/kafka-topics.sh \
+        --bootstrap-server localhost:9092 --delete --topic "$TOPIC" >/dev/null 2>&1
+    docker exec srisk-kafka /opt/kafka/bin/kafka-topics.sh \
+        --bootstrap-server localhost:9092 --create --topic "$TOPIC" \
+        --partitions 6 --replication-factor 1 >/dev/null 2>&1
+    sleep 2
+  else
+    # Seek to the end instead of deleting: the demo measures what it produces,
+    # the topic keeps its history, and repeated runs need no cleanup between
+    # them. That retained history is also the evidence that the log absorbs
+    # backlog — a consumer drained 2M rows against a 515k producer in the
+    # end-to-end run precisely because it was there.
+    docker exec srisk-kafka /opt/kafka/bin/kafka-consumer-groups.sh \
+        --bootstrap-server localhost:9092 --group "$GROUP" --topic "$TOPIC" \
+        --reset-offsets --to-latest --execute >/dev/null 2>&1
+  fi
 
   python -m streaming.consumer --source kafka --brokers "$BROKERS" --topic "$TOPIC" \
       --group "$GROUP" --database "$DB" --batch-size 20000 --flush-ms 1000 \
