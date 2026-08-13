@@ -78,8 +78,9 @@ Betflow computes everything once over a frozen export. This is the design for
 running the same analysis when the data never stops arriving: 70k–500k betslips
 per minute, a target of 20M+ rows, and no downtime while it happens.
 
-**Design only at this stage** — the records exist so that implementation is
-execution rather than invention.
+**Built and measured.** Run it with `streaming/load/end_to_end.sh` — the
+expected figures are in [Running it](#running-the-streaming-pipeline) below, and
+the raw results are committed under `streaming/results/`.
 
 | Document | What it settles |
 |---|---|
@@ -93,6 +94,88 @@ execution rather than invention.
 | [ADR-0013](docs/adr/0013-a-log-between-producer-and-consumer.md) | A log between producer and consumer, for observability rather than throughput |
 | [ADR-0014](docs/adr/0014-aggregate-in-the-database.md) | Aggregate in the database; canonicalise at ingest |
 | [Ingestion flow](docs/diagrams/ingestion-flow.md) · [Scaling](docs/diagrams/scaling.md) | Diagrams (render on GitHub) |
+
+### Running the streaming pipeline
+
+```bash
+cd streaming && docker compose up -d          # ClickHouse, Kafka, AKHQ, API, Varnish
+curl -s http://localhost:18123/ping           # -> Ok.
+```
+
+Requires `confluent-kafka` (`pip install confluent-kafka`) and, for the reader
+load, `k6` (`brew install k6`).
+
+**The whole pipeline at once** — producer → Kafka → consumer → ClickHouse →
+refresh → API → Varnish → 100 concurrent readers:
+
+```bash
+streaming/load/end_to_end.sh 500000 60        # rate per minute, seconds
+```
+
+Measured on an M3 Pro with Docker allocated 4 CPUs / 8.3 GB (full output in
+[`streaming/results/07-end-to-end.md`](streaming/results/07-end-to-end.md)):
+
+```
+producer → Kafka        8,590 ev/s  (515,418/min — the brief's ceiling)
+consumer → ClickHouse   2,015,499 rows in 86s
+refresh (SQL, class 1)  9 ticks, mean 3.98s
+read latency p50/p95    1.74 ms / 15.87 ms
+cache hit rate          99.84%
+backend fetches         85 for 5,201 client requests
+                        THRESHOLDS PASSED
+```
+
+**The three numbers that get confused with each other**, and only the first is
+what a user waits for:
+
+| | Measured | What it is |
+|---|---|---|
+| response latency | **1.74 ms** | what a reader waits |
+| **data age** | **2.8 – 5.9 s** | how stale the figure on screen is |
+| recompute cost | 0.16 – 8.25 s | what runs in the background |
+
+Volume moves the third, which moves the second, and leaves the first alone —
+because the front end reads a precomputed artifact rather than querying the
+database. At 70k/min the same figures hold with more headroom; the ceiling was
+measured at 500k/min because that is what the brief asks for.
+
+**Running the pieces separately**
+
+```bash
+# generate betslips at a dialled rate, shape calibrated against the real export
+python -m streaming.producer --rate 500000 --duration 60 --sink kafka
+
+# consume, canonicalise, insert (idempotent — replay changes nothing)
+python -m streaming.consumer --source kafka --database srisk
+
+# recompute and publish an artifact; class 1 aggregates in SQL
+python -m streaming.refresh --once --classes 1 --out streaming/out/artifacts
+
+# 100 concurrent readers against Varnish
+k6 run streaming/load/k6_readers.js
+```
+
+**Verifying the properties the design claims**
+
+```bash
+streaming/load/kafka_lag.sh          # lag rises and drains, read from the broker
+streaming/load/kafka_rescale.sh      # scale consumers live; partitions rebalance
+streaming/load/kafka_restart.sh      # SIGKILL mid-stream; state converges identically
+streaming/load/concurrent_test.sh    # read latency holds under sustained ingest
+```
+
+Each writes its numbers to `streaming/results/`. The producer's calibration is
+itself checked — `python -m streaming.producer.check_shape` asserts the
+generated stream reproduces the export's Gini, cardinalities and currency mix,
+because uniformly random values would make every concentration metric
+meaningless.
+
+**What the dashboard shows.** The artifacts are served at
+`http://localhost:18081/artifact/<name>` with per-class `Cache-Control`, and
+`http://localhost:18081/artifact/ops` reports each artifact's age, the stream
+watermark and the refresh timing. The dashboard itself still reads the payload
+baked in at build time; polling the API is the remaining gap in the brief's
+"updates the ui in near realtime".
 
 The design rests on a measured fact rather than an assumption. The two exports in
 `data/raw/` were generated **95 seconds apart**; across the 42 shared rows whose
