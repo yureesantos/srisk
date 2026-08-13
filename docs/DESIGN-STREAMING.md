@@ -74,6 +74,14 @@ The `refresh/` boundary is where the existing `betflow/src` code is **reused, no
 rewritten**: `sharp.analyse()` and `gini_lorenz()` take frames and return tables,
 so they take frames from ClickHouse exactly as they took frames from pandas.
 
+**Amended by [ADR-0014](adr/0014-aggregate-in-the-database.md).** That reuse is
+right for the *statistics* and wrong for *aggregation*. Pulling every row into
+pandas to group it costs ~11s at 20M rows against 2.73s to group in the engine —
+which is ClickHouse as a storage engine with the bottleneck still in Python.
+Class 1 breakdowns now run as SQL (1.76s → 0.59s on 76k rows); the sharp test
+and Gini stay in the validated Python, over input the database has already
+reduced to hundreds of rows.
+
 ---
 
 ## Contracts

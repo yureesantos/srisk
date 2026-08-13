@@ -83,8 +83,15 @@ def main() -> int:
                         "net_revenue": float(record["Net Revenue"]),
                         "event_kind": "placement",
                         "source": path.name,
-                        "is_inplay": 0,
-                        "minutes_to_kickoff": 0.0,
+                        # Derived, not defaulted. Writing 0 here classified all
+                        # 5,539 in-play legs as pre-match, which silently
+                        # inflated the sharp test's scoring units by 5.2%: an
+                        # in-play leg has no valid pre-kick-off reference, so it
+                        # must not enter a price-reference group (ADR-0005).
+                        "is_inplay": int(placed > event),
+                        "minutes_to_kickoff": round(
+                            (placed - event).total_seconds() / 60.0, 2
+                        ),
                         # The version (ADR-0007): source snapshot time, taken
                         # from the export filename. Rows from the later export
                         # supersede the earlier one's by carrying a higher value.

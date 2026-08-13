@@ -36,3 +36,6 @@ data/raw/
 
 # Generated streaming artifacts (rebuilt by the refresh job)
 streaming/out/
+
+# Transient logs from load runs (results are summarised in the .md files)
+streaming/results/_*.log

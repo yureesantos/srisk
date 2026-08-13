@@ -89,6 +89,9 @@ execution rather than invention.
 | [ADR-0009](docs/adr/0009-freshness-is-declared-per-layer.md) | Freshness declared per layer; the artifact hash becomes hash + watermark |
 | [ADR-0010](docs/adr/0010-scaling-path-and-the-state-that-blocks-it.md) | What breaks first, and the state that blocks replication |
 | [ADR-0011](docs/adr/0011-http-cache-in-front-of-the-artifact-api.md) | HTTP cache in front of the API, invalidated by event |
+| [ADR-0012](docs/adr/0012-final-not-argmax-measured.md) | Collapse with `FINAL`, not `argMax` — and measure before recommending |
+| [ADR-0013](docs/adr/0013-a-log-between-producer-and-consumer.md) | A log between producer and consumer, for observability rather than throughput |
+| [ADR-0014](docs/adr/0014-aggregate-in-the-database.md) | Aggregate in the database; canonicalise at ingest |
 | [Ingestion flow](docs/diagrams/ingestion-flow.md) · [Scaling](docs/diagrams/scaling.md) | Diagrams (render on GitHub) |
 
 The design rests on a measured fact rather than an assumption. The two exports in
