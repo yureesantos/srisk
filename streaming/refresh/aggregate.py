@@ -249,7 +249,85 @@ class Aggregator:
                     "turnover": _money(money, key),
                 }
             )
-        return {"grain": grain, "rows": rows}
+        return {
+            "grain": grain,
+            "rows": rows,
+            # The batch contract gives every table section these two fields and
+            # the dashboard reads them without guarding. Truncation is null
+            # rather than absent: the tail is carried by the `__other__` row, so
+            # nothing is dropped and there is nothing to declare.
+            "notes": [
+                f"Ranked by {count_name}; totals cover all values, "
+                f"with the tail rolled into `__other__`."
+            ],
+            "truncation": None,
+        }
+
+    def leg_inflation(self) -> dict:
+        """Leg-grain turnover over betslip-grain turnover, per currency.
+
+        Measured at 1.087x on EUR in the real export: a combined bet repeats its
+        stake on every leg, so summing legs overstates turnover. The ratio is
+        per currency because a cross-currency one would be meaningless.
+        """
+        frame = self.q(
+            f"""
+            SELECT l.currency AS currency,
+                   round(l.leg_total / b.betslip_total, 4) AS inflation
+            FROM (
+                SELECT currency, sum(turnover) AS leg_total
+                FROM betslip_leg FINAL WHERE currency != '' GROUP BY currency
+            ) AS l
+            INNER JOIN (
+                SELECT currency, sum(turnover) AS betslip_total
+                FROM (
+                    SELECT argMin(currency, placed_at) AS currency,
+                           argMin(turnover, placed_at) AS turnover
+                    FROM betslip_leg FINAL GROUP BY {BETSLIP_KEY}
+                )
+                WHERE currency != '' GROUP BY currency
+            ) AS b ON l.currency = b.currency
+            FORMAT TSVWithNames
+            """
+        )
+        return {
+            str(r.currency): float(r.inflation)
+            for r in frame.itertuples()
+            if _is_currency(r.currency)
+        }
+
+    def monthly(self) -> dict:
+        """Betslips per calendar month.
+
+        The batch payload carries this because the export's window is uneven —
+        June holds 99.8% of betslips against a three-month tail — and a reader
+        seeing "March to June" would otherwise assume a four-month series.
+        """
+        frame = self.q(
+            f"""
+            SELECT toString(toYYYYMM(placed_day)) AS month,
+                   count()                        AS betslips
+            FROM (
+                SELECT min(placed_at) AS placed_day
+                FROM betslip_leg FINAL GROUP BY {BETSLIP_KEY}
+            )
+            GROUP BY month ORDER BY month FORMAT TSVWithNames
+            """
+        )
+        total = int(frame["betslips"].sum()) if len(frame) else 0
+        return {
+            "grain": "betslip",
+            "rows": [
+                {
+                    "month": f"{str(r.month)[:4]}-{str(r.month)[4:]}",
+                    "betslips": int(r.betslips),
+                    "share": round(int(r.betslips) / total, 4) if total else 0.0,
+                }
+                for r in frame.itertuples()
+            ],
+            "notes": [],
+            "truncation": None,
+        }
 
     def daily(self) -> dict:
         frame = self.q(
@@ -286,7 +364,12 @@ class Aggregator:
                     },
                 }
             )
-        return {"grain": "betslip", "rows": rows}
+        return {
+            "grain": "betslip",
+            "rows": rows,
+            "notes": ["Betslip grain: one stake per betslip, never per leg (ADR-0003)."],
+            "truncation": None,
+        }
 
     def phases(self) -> dict:
         """Timing relative to kick-off.
@@ -339,6 +422,13 @@ class Aggregator:
                 {
                     "phase": phase,
                     "legs": legs,
+                    # The dashboard sums pre-match legs by filtering on this
+                    # flag; without it every phase reads as in-play and the
+                    # page reports "0% pre-match" over data that is 95%
+                    # pre-match. Derived from the phase rather than stored,
+                    # since the boundary is what defines it.
+                    "is_pre_match": not phase.startswith("In-play")
+                    and not phase.startswith("More than 120m"),
                     "share": round(legs / total, 4) if total else 0.0,
                     "turnover": {
                         "by_currency": {
@@ -349,4 +439,12 @@ class Aggregator:
                     },
                 }
             )
-        return {"grain": "leg", "rows": rows}
+        return {
+            "grain": "leg",
+            "rows": rows,
+            "notes": [
+                "The 60-minute boundary stands in for 'after team news': the "
+                "export carries no lineup timestamp, so it is a proxy."
+            ],
+            "truncation": None,
+        }

@@ -133,12 +133,27 @@ def build_once(
                 "date_min": str(universe.get("date_min", "")),
                 "date_max": str(universe.get("date_max", "")),
                 "inplay_legs": int(universe.get("inplay_legs", 0)),
+                # Under batch this was the raw row count before dedup. A stream
+                # has no "before": duplicates resolve by identity and version at
+                # merge time (ADR-0007), so the honest figure is the leg count.
+                "rows_raw_total": int(universe.get("legs", 0)),
+                "notes": [],
             },
             "turnover": {
                 "id": "overview.turnover",
                 "title": "Turnover by currency",
                 "grain": "betslip",
                 **money,
+                # Leg-grain money runs above betslip grain because a combined
+                # bet repeats its stake on every leg (ADR-0003). Computed per
+                # currency, never across.
+                "inflation_leg_vs_betslip": aggregator.leg_inflation(),
+                "notes": [],
+            },
+            "monthly_betslips": {
+                "id": "overview.monthly_betslips",
+                "title": "Betslips by month",
+                **aggregator.monthly(),
             },
         }
         payload["flow"] = {
